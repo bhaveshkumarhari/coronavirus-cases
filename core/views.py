@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 
 import re
 
+import json
+
 def cases(request):
 
     r = requests.get("https://www.worldometers.info/coronavirus/")
@@ -38,6 +40,7 @@ def cases(request):
         data["Tot Cases/ 1M pop"] = item.find_all("td")[8].text
         lst.append(data)
 
+#-------------------------------------------------------------------------------
 
     fourth = all.find_all("div",{"class":"row"})[3]
     first_div_col = fourth.find_all("div",{"class":"col-md-8"})[0]
@@ -53,13 +56,14 @@ def cases(request):
         news_list.remove('')
     
     news_list.remove('Latest Updates')
-    some_news_list = news_list[:25]
+    some_news_list = news_list[:50]
 
     plain_news_list = []
     for item in some_news_list:
         removed_source = item.replace('[source]','')
         plain_news_list.append(removed_source)
     
+#-------------------------------------------------------------------------
 
     total_cases = 0
     for item in lst:
@@ -135,42 +139,44 @@ def cases(request):
                 total_critical += values
                 string_total_critical = f"{total_critical:,d}"
 
+#--------------------------------------------------------------------------------
+
     context = {'country': lst, 'plain_news_list': plain_news_list, 'string_total_cases': string_total_cases, 'string_total_new_cases': string_total_new_cases, 'string_total_deaths': string_total_deaths,
                 'string_total_new_deaths': string_total_new_deaths, 'string_total_recovered': string_total_recovered, 'string_total_critical': string_total_critical,
                 'string_total_active_cases': string_total_active_cases}
 
     return render(request, "dashboard.html", context)
 
+def united_kingdom_cases(request):
+    url = "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats"
+
+    querystring = {"country":"United Kingdom"}
+
+    headers = {
+        'x-rapidapi-host': "covid-19-coronavirus-statistics.p.rapidapi.com",
+        'x-rapidapi-key': "b366e49ea8mshd793e280f2aa844p1f4bc1jsn63e668661ccf"
+        }
+
+    response = requests.request("GET", url, headers=headers, params=querystring)
+
+    data_json = json.loads(response.text)['data']
+    covid_stats = data_json['covid19Stats']
+    last_covid_stats = covid_stats[-1]
+
+    for key, value in last_covid_stats.items():
+        if key == 'confirmed':
+            uk_total_cases = value
+        if key == 'deaths':
+            uk_total_deaths = value
+        if key == 'recovered':
+            uk_total_recovered = value
+
+    context = {'uk_total_cases': uk_total_cases, 'uk_total_deaths': uk_total_deaths, 'uk_total_recovered': uk_total_recovered}
+
+    return render(request, "united_kingdom_cases.html", context)
+
 def privacy_policy(request):
     return render(request, "privacy_policy.html")
 
 def terms_conditions(request):
     return render(request, "terms_conditions.html")
-
-def terms_conditions(request):
-
-    import requests
-    from bs4 import BeautifulSoup
-
-    r = requests.get("https://www.worldometers.info/coronavirus/")
-    c = r.content
-
-    soup = BeautifulSoup(c,"html.parser")
-
-    all = soup.find_all("div",{"class":"container"})[1]
-    fourth = all.find_all("div",{"class":"row"})[3]
-    first_div_col = fourth.find_all("div",{"class":"col-md-8"})[0]
-    first_innercontent = first_div_col.find_all("div",{"id":"innercontent"})[0]
-    first_div_row = first_innercontent.find_all("div",{"class":"row"})[0]
-    news_block = first_div_row.find_all("div",{"class":"news_post"})
-
-    news_list = []
-    for item in news_block:
-        news_data = {}
-        news_data["News"] = news_block.text
-
-        news_list.append(news_data)
-
-    print(news_list)
-
-    return render(request, "dashboard.html")

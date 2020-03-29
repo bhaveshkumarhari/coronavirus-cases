@@ -23,4 +23,5 @@ urlpatterns = [
     path('', views.cases, name="home"),
     path('privacy-policy/', views.privacy_policy, name="privacy-policy"),
     path('terms-and-conditions/', views.terms_conditions, name="terms-and-conditions"),
+    path('united-kingdom-cases/', views.united_kingdom_cases, name="united-kingdom-cases"),
 ]
