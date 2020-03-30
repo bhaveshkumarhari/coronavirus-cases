@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <!-- <div class="col-lg-3 col-md-6">
+        <div class="col-lg-3 col-md-6">
             <div class="card">
                 <div class="card-body">
                     <div class="stat-widget-five">
@@ -87,23 +87,26 @@
                         <div class="stat-content">
                             <div class="text-left dib">
                                 <div class="stat-text">Critical</div>
-                                <div class="stat-heading"><b><span style="font-size: 18pt;">xyz</span></b></div>
+                                <div class="stat-heading"><b><span style="font-size: 18pt;">{{ uk_total_critical }}</span></b></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 
     <a href="#news-section" class="nav-link"><span class="label label-danger">Latest</span> <u>News Worldwide</u></a>
     <!-- <h5 style="float: left;">Confirmed Cases and Deaths by Country, Territory, or Conveyance.</h5> -->
-    <h5 style="float: right;">Confirmed Cases and Deaths by Country, Territory, or Conveyance.</h5>
+    <h5 style="float: right;">Listed by local authority for England, health board for Scotland. Statistics for Wales and Northern Ireland are not broken down by area.</h5>
 
 
     <div class="clearfix col-md-12"></div>
     
     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by City...">
+    <a class="btn btn-primary" href="{% url 'home' %}" role="button">Back to Country</a>
+    <br/>
+
     <!-- Orders -->
     <div class="orders">
         <div class="row">
@@ -116,20 +119,23 @@
                                 </th>
                                 <th class="th-sm" style="background-color: black; color: white;">Total Cases
                                 </th>
-                                <th class="th-sm" style="background-color: rgb(251, 206, 154);">New Cases
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Total Deaths
-                                </th>
-                                <th class="th-sm" style="background-color: red; color: white;">New Deaths
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Total Recovered
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Active Cases
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Critical
-                                </th>
                               </tr>
                             </thead>
+                            {% for item in uk_list %}
+                            <tbody>
+                                <tr>
+                                    {% for key, value in item.items %}
+                                        {% if key == 'City' %}
+                                            <td><b><u>{{ value }}</u></b></td>
+                                        {% endif %}
+                                        {% if key == 'Cases' %}
+                                            <td>{{ value }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+
 
                           </table>
 
@@ -142,10 +148,18 @@
 
 
 <div class="col-md-3">
+    
+    <!-- <a href="https://indiafightscorona.giveindia.org/" target="_blank"><img src="{% static 'img/donateindia.png' %}" alt="Smiley face"></a> -->
+    
     <section class="ftco-section ftco-no-pb goto-here" id="news-section">
     <h4>Latest Updates</h4>
     <span class="label label-danger">News Worldwide</span>
-
+    {% for item in plain_news_list %}
+        
+        {{item}}
+        <br/>
+        <br/>
+    {% endfor %}
     </section>
 </div>
 

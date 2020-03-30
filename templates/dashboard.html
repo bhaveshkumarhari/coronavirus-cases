@@ -96,10 +96,18 @@
             </div>
         </div>
 
+        <!-- <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <a href="https://indiafightscorona.giveindia.org/" target="_blank"><img src="{% static 'img/donateindia.png' %}" alt="Smiley face"></a>
+            </div>
+        </div> -->
+
     </div>
+
 
     <a href="#news-section" class="nav-link"><span class="label label-danger">Latest</span> <u>News Worldwide</u></a>
     <!-- <h5 style="float: left;">Confirmed Cases and Deaths by Country, Territory, or Conveyance.</h5> -->
+    <!-- <a href="https://indiafightscorona.giveindia.org/" class="nav-link" style="float: right;" target="_blank"><u>Donate for India</u></a> -->
     <h5 style="float: right;">Confirmed Cases and Deaths by Country, Territory, or Conveyance.</h5>
 
 
@@ -140,7 +148,11 @@
                                 <tr>
                                     {% for key, value in item.items %}
                                         {% if key == 'Country' %}
-                                            <td><b><u>{{ value }}</u></b></td>
+                                            {% if value == 'UK' %}
+                                                <td><b><u><a href="{% url 'united-kingdom-cases' %}">{{ value }}</a></u></b></td>
+                                            {% else %}
+                                                <td><b><u>{{ value }}</u></b></td>
+                                            {% endif %}
                                         {% endif %}
                                         {% if key == 'Total Cases' %}
                                             <td>{{ value }}</td>
@@ -201,6 +213,9 @@
 
 
 <div class="col-md-3">
+    
+    <a href="https://indiafightscorona.giveindia.org/" target="_blank"><img src="{% static 'img/donateindia.png' %}" alt="Smiley face"></a>
+    
     <section class="ftco-section ftco-no-pb goto-here" id="news-section">
     <h4>Latest Updates</h4>
     <span class="label label-danger">News Worldwide</span>
