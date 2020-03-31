@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
             
 {% block content %}
@@ -7,8 +8,7 @@
 <div>
 <div class="video__icon" style="margin-top: 12px; margin-left: 30px;">
     <div class="circle--outer"></div>
-    <div class="circle--inner"></div>
-    
+    <div class="circle--inner"></div>  
 </div>
 
 <h1 style="margin-left: 60px; font-size: 24px;"><b><span style="color: #e50040;">Live </span></b>Coronavirus Cases</h1>
@@ -147,33 +147,35 @@
                             <tbody>
                                 <tr>
                                     {% for key, value in item.items %}
-                                        {% if key == 'Country' %}
+                                        {% if key == 'country' %}
                                             {% if value == 'UK' %}
                                                 <td><b><u><a href="{% url 'united-kingdom-cases' %}">{{ value }}</a></u></b></td>
+                                            {% elif value == 'USA' %}
+                                                <td><b><u><a href="{% url 'usa-cases' %}">{{ value }}</a></u></b></td>
                                             {% else %}
                                                 <td><b><u>{{ value }}</u></b></td>
                                             {% endif %}
                                         {% endif %}
-                                        {% if key == 'Total Cases' %}
-                                            <td>{{ value }}</td>
+                                        {% if key == 'cases' %}
+                                            <td>{{ value|intcomma }}</td>
                                         {% endif %}
-                                        {% if key == 'New Cases' %}
-                                            <td style="background-color: rgb(251, 206, 154);">{{ value }}</td>
+                                        {% if key == 'todayCases' %}
+                                            <td style="background-color: rgb(251, 206, 154);">{{ value|intcomma }}</td>
                                         {% endif %}
-                                        {% if key == 'Total Deaths' %}
-                                            <td>{{ value }}</td>
+                                        {% if key == 'deaths' %}
+                                            <td>{{ value|intcomma }}</td>
                                         {% endif %}
-                                        {% if key == 'New Deaths' %}
-                                            <td style="background-color: red; color: white;">{{ value }}</td>
+                                        {% if key == 'todayDeaths' %}
+                                            <td style="background-color: red; color: white;">{{ value|intcomma }}</td>
                                         {% endif %}
-                                        {% if key == 'Total Recovered' %}
-                                            <td>{{ value }}</td>
+                                        {% if key == 'recovered' %}
+                                            <td>{{ value|intcomma }}</td>
                                         {% endif %}
-                                        {% if key == 'Active Cases' %}
-                                            <td>{{ value }}</td>
+                                        {% if key == 'active' %}
+                                            <td>{{ value|intcomma }}</td>
                                         {% endif %}
-                                        {% if key == 'Serious, Critical' %}
-                                            <td>{{ value }}</td>
+                                        {% if key == 'critical' %}
+                                            <td>{{ value|intcomma }}</td>
                                         {% endif %}
                                         <!-- {% if key == 'Tot Cases/ 1M pop' %}
                                             <td class="column100 column1" data-column="column1">{{ value }}</td>
