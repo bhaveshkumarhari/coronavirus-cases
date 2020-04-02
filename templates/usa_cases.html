@@ -140,19 +140,39 @@
                                           <td>{{ value|intcomma }}</td>
                                           {% endif %}
                                           {% if key == 'cases' %}
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
                                               <td>{{ value|intcomma }}</td>
+                                            {% endif %}
                                           {% endif %}
                                           {% if key == 'todayCases' %}
-                                              <td style="background-color: rgb(251, 206, 154);">{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td style="background-color: rgb(251, 206, 154);">+{{ value|intcomma }}</td>
+                                            {% endif %}
                                           {% endif %}
                                           {% if key == 'deaths' %}
-                                              <td>{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ value|intcomma }}</td>
+                                            {% endif %}
                                           {% endif %}
                                           {% if key == 'todayDeaths' %}
-                                              <td style="background-color: red; color: white;">{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td style="background-color: red; color: white;">+{{ value|intcomma }}</td>
+                                            {% endif %}
                                           {% endif %}
                                           {% if key == 'active' %}
-                                              <td>{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ value|intcomma }}</td>
+                                            {% endif %}
                                           {% endif %}
                                       {% endfor %}
                                   </tr>

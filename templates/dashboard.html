@@ -112,8 +112,8 @@
 
 
     <div class="clearfix col-md-12"></div>
-    
     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by country..">
+    <a class="button" style="margin-bottom: 10px;" href="{% url 'advice-for-public' %}" role="button">Advice for public</a>
     <!-- Orders -->
     <div class="orders">
         <div class="row">
@@ -140,9 +140,6 @@
                                 </th>
                               </tr>
                             </thead>
-
-
-
                             {% for item in country %}
                             <tbody>
                                 <tr>
@@ -160,22 +157,46 @@
                                             <td>{{ value|intcomma }}</td>
                                         {% endif %}
                                         {% if key == 'todayCases' %}
-                                            <td style="background-color: rgb(251, 206, 154);">{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td style="background-color: rgb(251, 206, 154);">+{{ value|intcomma }}</td>
+                                            {% endif %}
                                         {% endif %}
                                         {% if key == 'deaths' %}
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
                                             <td>{{ value|intcomma }}</td>
+                                            {% endif %}
                                         {% endif %}
                                         {% if key == 'todayDeaths' %}
-                                            <td style="background-color: red; color: white;">{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td style="background-color: red; color: white;">+{{ value|intcomma }}</td>
+                                            {% endif %}
                                         {% endif %}
                                         {% if key == 'recovered' %}
-                                            <td>{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ value|intcomma }}</td>
+                                            {% endif %}  
                                         {% endif %}
                                         {% if key == 'active' %}
-                                            <td>{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ value|intcomma }}</td>
+                                            {% endif %}
                                         {% endif %}
                                         {% if key == 'critical' %}
-                                            <td>{{ value|intcomma }}</td>
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ value|intcomma }}</td>
+                                            {% endif %}
                                         {% endif %}
                                         <!-- {% if key == 'Tot Cases/ 1M pop' %}
                                             <td class="column100 column1" data-column="column1">{{ value }}</td>
@@ -193,7 +214,7 @@
                                 <th style="background-color: rgb(251, 206, 154);">+{{ string_total_new_cases }}
                                 </th>
                                 <th>{{ string_total_deaths }}
-                                </th>
+                                </th> 
                                 <th style="background-color: red; color: white;">+{{ string_total_new_deaths }}
                                 </th>
                                 <th>{{ string_total_recovered }}
@@ -215,8 +236,10 @@
 
 
 <div class="col-md-3">
+
+    <!-- <a href="{% url 'advice-for-public' %}"><div class="banner">Advise for public</div></a> -->
     
-    <a href="https://indiafightscorona.giveindia.org/" target="_blank"><img src="{% static 'img/donateindia.png' %}" alt="Smiley face"></a>
+    <!-- <a href="https://indiafightscorona.giveindia.org/" target="_blank"><img src="{% static 'img/donateindia.png' %}" alt="Smiley face"></a> -->
     
     <section class="ftco-section ftco-no-pb goto-here" id="news-section">
     <h4>Latest Updates</h4>
