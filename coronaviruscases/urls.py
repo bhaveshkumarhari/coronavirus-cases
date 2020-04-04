@@ -23,7 +23,7 @@ urlpatterns = [
     path('advice-for-public/', views.advice_for_public, name="advice-for-public"),
     path('united-kingdom-cases/', views.united_kingdom_cases, name="united-kingdom-cases"),
     path('usa-cases/', views.usa_cases, name="usa-cases"),
-    # path('world-map/', views.world_map, name="world-map"),
+    # path('world/', views.world, name="world"),
     path('privacy-policy/', views.privacy_policy, name="privacy-policy"),
     path('terms-and-conditions/', views.terms_conditions, name="terms-and-conditions"),
 ]

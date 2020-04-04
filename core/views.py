@@ -14,6 +14,29 @@ soup = BeautifulSoup(c,"html.parser")
 
 all = soup.find_all("div",{"class":"container"})[1]
 
+#-------------GET NEWS UPDATES--------------------------------------
+
+fourth = all.find_all("div",{"class":"row"})[3]
+first_div_col = fourth.find_all("div",{"class":"col-md-8"})[0]
+first_innercontent = first_div_col.find_all("div",{"id":"innercontent"})[0]
+first_div_row = first_innercontent.find_all("div",{"class":"row"})[0].text
+# news_block = first_div_row.find_all("div",{"class":"news_post"})
+
+
+news_list = []
+news_list = first_div_row.splitlines()
+
+for item in news_list:
+    news_list.remove('')
+
+news_list.remove('Latest Updates')
+some_news_list = news_list[:50]
+
+plain_news_list = []
+for item in some_news_list:
+    removed_source = item.replace('[source]','')
+    plain_news_list.append(removed_source)
+
 #--------------------------------------------------------------
 
 url = "https://corona.lmao.ninja/countries"
@@ -26,109 +49,97 @@ world_data_json = json.loads(response.text)
 
 def cases(request):
 
-    total_cases = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "cases":
-                total_cases += value
-                string_total_cases = f"{total_cases:,d}" # TODO: Use HUMANIZE
+    # total_cases = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "cases":
+    #             total_cases += value
+    #             string_total_cases = f"{total_cases:,d}"
 
-    total_new_cases = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "todayCases":
-                total_new_cases += value
-                string_total_new_cases = f"{total_new_cases:,d}"
+    # total_new_cases = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "todayCases":
+    #             total_new_cases += value
+    #             string_total_new_cases = f"{total_new_cases:,d}"
     
-    total_deaths = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "deaths":
-                total_deaths += value
-                string_total_deaths = f"{total_deaths:,d}"
+    # total_deaths = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "deaths":
+    #             total_deaths += value
+    #             string_total_deaths = f"{total_deaths:,d}"
 
-    total_new_deaths = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "todayDeaths":
-                total_new_deaths += value
-                string_total_new_deaths = f"{total_new_deaths:,d}"
+    # total_new_deaths = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "todayDeaths":
+    #             total_new_deaths += value
+    #             string_total_new_deaths = f"{total_new_deaths:,d}"
 
-    total_recovered = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "recovered":
-                total_recovered += value
-                string_total_recovered = f"{total_recovered:,d}"
+    # total_recovered = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "recovered":
+    #             total_recovered += value
+    #             string_total_recovered = f"{total_recovered:,d}"
     
-    total_active_cases = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "active":
-                total_active_cases += value
-                string_total_active_cases = f"{total_active_cases:,d}"
+    # total_active_cases = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "active":
+    #             total_active_cases += value
+    #             string_total_active_cases = f"{total_active_cases:,d}"
 
-    total_critical = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "critical":
-                total_critical += value
-                string_total_critical = f"{total_critical:,d}"
+    # total_critical = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "critical":
+    #             total_critical += value
+    #             string_total_critical = f"{total_critical:,d}"
 
-#-------------GET NEWS UPDATES--------------------------------------
+            
+    # total_casesPerOneMillion = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "casesPerOneMillion":
+    #             try:
+    #                 float_value = float(value)
+    #             except:
+    #                 float_value = 0.0
+    #             total_casesPerOneMillion += float_value
+                # print(type(float_value))
+                    
+                # string_total_casesPerOneMillion = f"{total_casesPerOneMillion:,d}"
 
-    fourth = all.find_all("div",{"class":"row"})[3]
-    first_div_col = fourth.find_all("div",{"class":"col-md-8"})[0]
-    first_innercontent = first_div_col.find_all("div",{"id":"innercontent"})[0]
-    first_div_row = first_innercontent.find_all("div",{"class":"row"})[0].text
-    # news_block = first_div_row.find_all("div",{"class":"news_post"})
+    # total_casesPerOneMillion = 0
+    # for item in world_data_json:
+    #     for key, value in item.items():
+    #         if key == "deathsPerOneMillion":
+    #             total_casesPerOneMillion += float(value)
+    #             string_total_casesPerOneMillion = f"{total_casesPerOneMillion:,d}"
 
+    df=pandas.DataFrame(world_data_json)
 
-    news_list = []
-    news_list = first_div_row.splitlines()
+    # Filter table with specific value
+    world_value = df[df['country'] == 'World']
 
-    for item in news_list:
-        news_list.remove('')
-    
-    news_list.remove('Latest Updates')
-    some_news_list = news_list[:50]
+    # Convert to string without index value
+    world_total_cases = world_value.cases.to_string(index=False)
+    world_total_deaths = world_value.deaths.to_string(index=False)
+    world_total_recovered = world_value.recovered.to_string(index=False)
+    world_total_critical = world_value.critical.to_string(index=False)
 
-    plain_news_list = []
-    for item in some_news_list:
-        removed_source = item.replace('[source]','')
-        plain_news_list.append(removed_source)
-    
+    world_total_todayCases = world_value.todayCases.to_string(index=False)
+    world_total_todayDeaths = world_value.todayDeaths.to_string(index=False)
+    world_total_active = world_value.active.to_string(index=False)
 
-
-    context = {'country': world_data_json, 'plain_news_list': plain_news_list, 'string_total_cases': string_total_cases, 'string_total_new_cases': string_total_new_cases, 'string_total_deaths': string_total_deaths,
-                'string_total_new_deaths': string_total_new_deaths, 'string_total_recovered': string_total_recovered, 'string_total_critical': string_total_critical,
-                'string_total_active_cases': string_total_active_cases}
+    context = {'country': world_data_json, 'plain_news_list': plain_news_list, 'world_total_cases': world_total_cases, 'world_total_deaths': world_total_deaths, 'world_total_recovered': world_total_recovered, 
+    'world_total_critical': world_total_critical,'world_total_todayCases':world_total_todayCases, 'world_total_todayDeaths': world_total_todayDeaths, 'world_total_active':world_total_active}
 
     return render(request, "dashboard.html", context)
 
 def united_kingdom_cases(request):
-
-#----------------GET NEWS UPDATES---------------------------------------
-
-    fourth = all.find_all("div",{"class":"row"})[3]
-    first_div_col = fourth.find_all("div",{"class":"col-md-8"})[0]
-    first_innercontent = first_div_col.find_all("div",{"id":"innercontent"})[0]
-    first_div_row = first_innercontent.find_all("div",{"class":"row"})[0].text
-    # news_block = first_div_row.find_all("div",{"class":"news_post"})
-
-    news_list = []
-    news_list = first_div_row.splitlines() #Separate every sentence and add to list
-
-    for item in news_list:
-        news_list.remove('') #Remove blank values from list
-    
-    news_list.remove('Latest Updates')
-    some_news_list = news_list[:50] #Get first 50 news list
-
-    plain_news_list = []
-    for item in some_news_list:
-        removed_source = item.replace('[source]','') #Remove word contains in sentence
-        plain_news_list.append(removed_source)
     
 #------------------UK data from world cases API-------------------------------
 
@@ -185,28 +196,6 @@ def usa_cases(request):
 
     states_data_json = json.loads(response.text)
 
-#-------------GET NEWS UPDATES----------------------------------
-
-    fourth = all.find_all("div",{"class":"row"})[3]
-    first_div_col = fourth.find_all("div",{"class":"col-md-8"})[0]
-    first_innercontent = first_div_col.find_all("div",{"id":"innercontent"})[0]
-    first_div_row = first_innercontent.find_all("div",{"class":"row"})[0].text
-    # news_block = first_div_row.find_all("div",{"class":"news_post"})
-
-    news_list = []
-    news_list = first_div_row.splitlines() #Separate every sentence and add to list
-
-    for item in news_list:
-        news_list.remove('') #Remove blank values from list
-    
-    news_list.remove('Latest Updates')
-    some_news_list = news_list[:50] #Get first 50 news list
-
-    plain_news_list = []
-    for item in some_news_list:
-        removed_source = item.replace('[source]','') #Remove word contains in sentence
-        plain_news_list.append(removed_source)
-
 #---------------GET USA CONTENTS FROM COUNTRY API--------------------
 
     df=pandas.DataFrame(world_data_json)
@@ -228,89 +217,18 @@ def usa_cases(request):
 
 def advice_for_public(request):
 
-    total_cases = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "cases":
-                total_cases += value
-                string_total_cases = f"{total_cases:,d}" # TODO: Use HUMANIZE
-
-    total_new_cases = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "todayCases":
-                total_new_cases += value
-                string_total_new_cases = f"{total_new_cases:,d}"
-    
-    total_deaths = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "deaths":
-                total_deaths += value
-                string_total_deaths = f"{total_deaths:,d}"
-
-    total_new_deaths = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "todayDeaths":
-                total_new_deaths += value
-                string_total_new_deaths = f"{total_new_deaths:,d}"
-
-    total_recovered = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "recovered":
-                total_recovered += value
-                string_total_recovered = f"{total_recovered:,d}"
-    
-    total_active_cases = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "active":
-                total_active_cases += value
-                string_total_active_cases = f"{total_active_cases:,d}"
-
-    total_critical = 0
-    for item in world_data_json:
-        for key, value in item.items():
-            if key == "critical":
-                total_critical += value
-                string_total_critical = f"{total_critical:,d}"
-
-#-------------GET NEWS UPDATES--------------------------------------
-
-    fourth = all.find_all("div",{"class":"row"})[3]
-    first_div_col = fourth.find_all("div",{"class":"col-md-8"})[0]
-    first_innercontent = first_div_col.find_all("div",{"id":"innercontent"})[0]
-    first_div_row = first_innercontent.find_all("div",{"class":"row"})[0].text
-    # news_block = first_div_row.find_all("div",{"class":"news_post"})
-
-
-    news_list = []
-    news_list = first_div_row.splitlines()
-
-    for item in news_list:
-        news_list.remove('')
-    
-    news_list.remove('Latest Updates')
-    some_news_list = news_list[:50]
-
-    plain_news_list = []
-    for item in some_news_list:
-        removed_source = item.replace('[source]','')
-        plain_news_list.append(removed_source)
-    
-
-
-    context = {'plain_news_list': plain_news_list, 'string_total_cases': string_total_cases, 'string_total_new_cases': string_total_new_cases, 'string_total_deaths': string_total_deaths,
-                'string_total_new_deaths': string_total_new_deaths, 'string_total_recovered': string_total_recovered, 'string_total_critical': string_total_critical,
-                'string_total_active_cases': string_total_active_cases}
+    context = {'plain_news_list': plain_news_list}
 
     return render(request, "advice_for_public.html", context)
 
-
 def privacy_policy(request):
-    return render(request, "privacy_policy.html")
+
+    context = {'plain_news_list': plain_news_list}
+
+    return render(request, "privacy_policy.html", context)
 
 def terms_conditions(request):
-    return render(request, "terms_conditions.html")
+
+    context = {'plain_news_list': plain_news_list}
+
+    return render(request, "terms_conditions.html", context)

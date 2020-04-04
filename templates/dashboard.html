@@ -1,303 +1,225 @@
-{% extends 'base.html' %}
+{% extends 'base.html'%}
 {% load static %}
 {% load humanize %}
 
-            
+
 {% block content %}
-
-<div>
-<div class="video__icon" style="margin-top: 12px; margin-left: 30px;">
-    <div class="circle--outer"></div>
-    <div class="circle--inner"></div>  
-</div>
-
-<h1 style="margin-left: 60px; font-size: 24px;"><b><span style="color: #e50040;">Live </span></b>Coronavirus Cases</h1>
-</div>
-
-<br>
-
-
-<div class="container-fluid">
-    <!-- Control the column width, and how they should appear on different devices -->
-    <div class="row">
-
-<div class="animated fadeIn col-md-9">
-        
-    <div class="row">
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib flat-color-1">
-                            <i class="fa fa-file-text" aria-hidden="true"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="text-left dib">
-                                <div class="stat-text">Total Cases</div>
-                                <div class="stat-heading"><b><span style="font-size: 18pt;">{{ string_total_cases }}</span></b></div>
-                            </div>
-                        </div>
-                    </div>
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                  <div class="card-icon">
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                  </div>
+                  <p class="card-category">Total Cases</p>
+                  <h3 class="card-title">{{ world_total_cases|intcomma }}
+                    <!-- <small>GB</small> -->
+                  </h3>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib flat-color-2">
-                            <i class="fa fa-heart" aria-hidden="true"></i>
-                        </div>
-                        <div class="stat-content">   
-                            <div class="text-left dib">
-                                <div class="stat-text">Total Deaths</div>
-                                <div class="stat-heading" style="color: #e50040;"><b><span style="font-size: 18pt;">{{ string_total_deaths }}</span></b></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <!-- <i class="material-icons text-warning">warning</i> -->
+                    <!-- <a href="#pablo" class="warning-link">Get More Space...</a> -->
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib flat-color-3">
-                            <i class="fa fa-medkit" aria-hidden="true"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="text-left dib">
-                                <div class="stat-text">Recovered</div>
-                                <div class="stat-heading" style="color: #52af49;"><b><span style="font-size: 18pt;">{{ string_total_recovered }}</span></b></div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-danger card-header-icon">
+                  <div class="card-icon">
+                    <i class="fa fa-heart" aria-hidden="true"></i>
+                  </div>
+                  <p class="card-category">Total Deaths</p>
+                  <h3 class="card-title" style="color: #da3a36;">{{ world_total_deaths|intcomma }}</h3>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib flat-color-4">
-                            <i class="fa fa-heartbeat" aria-hidden="true"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="text-left dib">
-                                <div class="stat-text">Critical</div>
-                                <div class="stat-heading"><b><span style="font-size: 18pt;">{{ string_total_critical }}</span></b></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <!-- <i class="material-icons">date_range</i> Last 24 Hours -->
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
-
-        <!-- <div class="col-lg-3 col-md-6">
-            <div class="card">
-                <a href="https://indiafightscorona.giveindia.org/" target="_blank"><img src="{% static 'img/donateindia.png' %}" alt="Smiley face"></a>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                  <div class="card-icon">
+                    <i class="fa fa-medkit" aria-hidden="true"></i>
+                  </div>
+                  <p class="card-category">Recovered</p>
+                  <h3 class="card-title" style="color: #52af49;">{{ world_total_recovered|intcomma }}</h3>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <!-- <i class="material-icons">local_offer</i> Tracked from Github -->
+                  </div>
+                </div>
+              </div>
             </div>
-        </div> -->
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-info card-header-icon">
+                  <div class="card-icon">
+                    <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                  </div>
+                  <p class="card-category">Critical</p>
+                  <h3 class="card-title">{{ world_total_critical|intcomma }}</h3>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <!-- <i class="material-icons">update</i> Just Updated -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    </div>
+          <div class="input-group no-border">
+            <input type="text" id="myInput" onkeyup="myFunction()" value="" class="form-control" placeholder="Search...">
+            <!-- <button type="submit" class="btn btn-default btn-round btn-just-icon">
+              <i class="material-icons">search</i>
+              <div class="ripple-container"></div>
+            </button> -->
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <!-- <h4 class="card-title">Employees Stats</h4> -->
+                  <p class="card-category">Confirmed Cases and Deaths by Country, Territory, or Conveyance.</p>
+                </div>
+                <div class="card-body table-responsive">
 
 
-    <a href="#news-section" class="nav-link"><span class="label label-danger">Latest</span> <u>News Worldwide</u></a>
-    <!-- <h5 style="float: left;">Confirmed Cases and Deaths by Country, Territory, or Conveyance.</h5> -->
-    <!-- <a href="https://indiafightscorona.giveindia.org/" class="nav-link" style="float: right;" target="_blank"><u>Donate for India</u></a> -->
-    <h5 style="float: right;">Confirmed Cases and Deaths by Country, Territory, or Conveyance.</h5>
-
-
-    <div class="clearfix col-md-12"></div>
-    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search by country..">
-    <a class="button" style="margin-bottom: 10px;" href="{% url 'advice-for-public' %}" role="button">Advice for public</a>
-    <!-- Orders -->
-    <div class="orders">
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="card">
-                        <table id="myTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-                            <thead>
-                              <tr>
-                                <th class="th-sm" style="background-color: black; color: white;">Country
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Total Cases
-                                </th>
-                                <th class="th-sm" style="background-color: rgb(251, 206, 154);">New Cases
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Total Deaths
-                                </th>
-                                <th class="th-sm" style="background-color: red; color: white;">New Deaths
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Total Recovered
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Active Cases
-                                </th>
-                                <th class="th-sm" style="background-color: black; color: white;">Critical
-                                </th>
-                              </tr>
-                            </thead>
-                            {% for item in country %}
-                            <tbody>
-                                <tr>
-                                    {% for key, value in item.items %}
-                                        {% if key == 'country' %}
-                                            {% if value == 'UK' %}
-                                                <td><b><u><a href="{% url 'united-kingdom-cases' %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'USA' %}
-                                                <td><b><u><a href="{% url 'usa-cases' %}">{{ value }}</a></u></b></td>
-                                            {% else %}
-                                                <td><b><u>{{ value }}</u></b></td>
-                                            {% endif %}
-                                        {% endif %}
-                                        {% if key == 'cases' %}
-                                            <td>{{ value|intcomma }}</td>
-                                        {% endif %}
-                                        {% if key == 'todayCases' %}
-                                            {% if value == 0 %}
-                                                <td></td>
-                                            {% else %}
-                                                <td style="background-color: rgb(251, 206, 154);">+{{ value|intcomma }}</td>
-                                            {% endif %}
-                                        {% endif %}
-                                        {% if key == 'deaths' %}
-                                            {% if value == 0 %}
-                                                <td></td>
-                                            {% else %}
-                                            <td>{{ value|intcomma }}</td>
-                                            {% endif %}
-                                        {% endif %}
-                                        {% if key == 'todayDeaths' %}
-                                            {% if value == 0 %}
-                                                <td></td>
-                                            {% else %}
-                                                <td style="background-color: red; color: white;">+{{ value|intcomma }}</td>
-                                            {% endif %}
-                                        {% endif %}
-                                        {% if key == 'recovered' %}
-                                            {% if value == 0 %}
-                                                <td></td>
-                                            {% else %}
-                                                <td>{{ value|intcomma }}</td>
-                                            {% endif %}  
-                                        {% endif %}
-                                        {% if key == 'active' %}
-                                            {% if value == 0 %}
-                                                <td></td>
-                                            {% else %}
-                                                <td>{{ value|intcomma }}</td>
-                                            {% endif %}
-                                        {% endif %}
-                                        {% if key == 'critical' %}
-                                            {% if value == 0 %}
-                                                <td></td>
-                                            {% else %}
-                                                <td>{{ value|intcomma }}</td>
-                                            {% endif %}
-                                        {% endif %}
-                                        <!-- {% if key == 'Tot Cases/ 1M pop' %}
-                                            <td class="column100 column1" data-column="column1">{{ value }}</td>
-                                        {% endif %} -->
-                                    {% endfor %}
-                                </tr>
-                            </tbody>
+                  <table id="myTable" class="table table-hover" cellspacing="0" width="100%">
+                    <thead>
+                      <tr>
+                        <th>Country
+                        </th>
+                        <th>Total Cases
+                        </th>
+                        <th>New Cases
+                        </th>
+                        <th>Total Deaths
+                        </th>
+                        <th>New Deaths
+                        </th>
+                        <th>Total Recovered
+                        </th>
+                        <th>Active Cases
+                        </th>
+                        <th>Critical
+                        </th>
+                        <!-- <th>Cases/1M Pop
+                        </th>
+                        <th>Deaths/1M Pop
+                        </th> -->
+                      </tr>
+                    </thead>
+                    {% for item in country %}
+                    <tbody>
+                        <tr>
+                            {% for key, value in item.items %}
+                                {% if key == 'country' %}
+                                    {% if value == 'UK' %}
+                                        <td><b><u><a href="{% url 'united-kingdom-cases' %}">{{ value }}</a></u></b></td>
+                                    {% elif value == 'USA' %}
+                                        <td><b><u><a href="{% url 'usa-cases' %}">{{ value }}</a></u></b></td>
+                                    {% else %}
+                                        <td><b><u>{{ value }}</u></b></td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if key == 'cases' %}
+                                    <td>{{ value|intcomma }}</td>
+                                {% endif %}
+                                {% if key == 'todayCases' %}
+                                    {% if value == 0 %}
+                                        <td></td>
+                                    {% else %}
+                                        <td style="color: #ff9800;">+{{ value|intcomma }}</td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if key == 'deaths' %}
+                                    {% if value == 0 %}
+                                        <td></td>
+                                    {% else %}
+                                    <td>{{ value|intcomma }}</td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if key == 'todayDeaths' %}
+                                    {% if value == 0 %}
+                                        <td></td>
+                                    {% else %}
+                                        <td style="color: #da3a36;">+{{ value|intcomma }}</td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if key == 'recovered' %}
+                                    {% if value == 0 %}
+                                        <td></td>
+                                    {% else %}
+                                        <td>{{ value|intcomma }}</td>
+                                    {% endif %}  
+                                {% endif %}
+                                {% if key == 'active' %}
+                                    {% if value == 0 %}
+                                        <td></td>
+                                    {% else %}
+                                        <td>{{ value|intcomma }}</td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if key == 'critical' %}
+                                    {% if value == 0 %}
+                                        <td></td>
+                                    {% else %}
+                                        <td>{{ value|intcomma }}</td>
+                                    {% endif %}
+                                {% endif %}
+                                <!-- {% if key == 'casesPerOneMillion' %}
+                                    {% if not value %}
+                                        <td></td>
+                                    {% else %}
+                                        <td>{{ value|intcomma }}</td>
+                                    {% endif %}
+                                {% endif %}
+                                {% if key == 'deathsPerOneMillion' %}
+                                    {% if not value %}
+                                        <td></td>
+                                    {% else %}
+                                        <td>{{ value|intcomma }}</td>
+                                    {% endif %}
+                                {% endif %} -->
                             {% endfor %}
-                            <tfoot>
-                              <tr>
-                                <th>Total
-                                </th>
-                                <th>{{ string_total_cases }}
-                                </th>
-                                <th style="background-color: rgb(251, 206, 154);">+{{ string_total_new_cases }}
-                                </th>
-                                <th>{{ string_total_deaths }}
-                                </th> 
-                                <th style="background-color: red; color: white;">+{{ string_total_new_deaths }}
-                                </th>
-                                <th>{{ string_total_recovered }}
-                                </th>
-                                <th>{{ string_total_active_cases }}
-                                </th>
-                                <th>{{ string_total_critical }}
-                                </th>
-                              </tr>
-                            </tfoot>
-                          </table>
-
-                          
-                </div> <!-- /.card -->
-            </div>  <!-- /.col-lg-8 -->
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                    <tfoot>
+                      <tr>
+                        <th>Total
+                        </th>
+                        <th>{{ world_total_cases|intcomma }}
+                        </th>
+                        <th style="color: #ff9800;">+{{ world_total_todayCases|intcomma }}
+                        </th>
+                        <th>{{ world_total_deaths|intcomma }}
+                        </th> 
+                        <th style="color: #da3a36;">+{{ world_total_todayDeaths|intcomma }}
+                        </th>
+                        <th>{{ world_total_recovered|intcomma }}
+                        </th>
+                        <th>{{ world_total_active|intcomma }}
+                        </th>
+                        <th>{{ world_total_critical|intcomma }}
+                        </th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-</div>
-
-
-<div class="col-md-3">
-
-    <!-- <a href="{% url 'advice-for-public' %}"><div class="banner">Advise for public</div></a> -->
-    
-    <!-- <a href="https://indiafightscorona.giveindia.org/" target="_blank"><img src="{% static 'img/donateindia.png' %}" alt="Smiley face"></a> -->
-    
-    <section class="ftco-section ftco-no-pb goto-here" id="news-section">
-    <h4>Latest Updates</h4>
-    <span class="label label-danger">News Worldwide</span>
-    {% for item in plain_news_list %}
-        
-        {{item}}
-        <br/>
-        <br/>
-    {% endfor %}
-    </section>
-</div>
-
-
-    </div>
-</div>
-
-<!-- jQuery -->
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
-<!-- Bootstrap core JavaScript -->
-<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
-<!-- Your custom scripts (optional) -->
-<script type="text/javascript"></script>
-
-<!-- MDBootstrap Datatables  -->
-<script type="text/javascript" src="{% static 'js/addons/datatables.min.js' %}"></script>
-
-
-
-<script>
-  function myFunction() {
-    // Declare variables
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("myTable");
-    tr = table.getElementsByTagName("tr");
-  
-    // Loop through all table rows, and hide those who don't match the search query
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[0];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }
-    }
-  }
-</script>
-
-
+      </div>
 {% endblock content %}
-
-    
