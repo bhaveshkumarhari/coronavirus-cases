@@ -190,18 +190,7 @@ def united_kingdom_cases(request):
 
 #------------------UK data from world cases API-------------------------------
 
-
-    df=pandas.DataFrame(world_data_json)
-
-    # Filter table with specific value
-    uk_value = df[df['country'] == 'UK']
-
-    # Convert to string without index value
-    uk_total_cases = uk_value.cases.to_string(index=False)
-    uk_total_deaths = uk_value.deaths.to_string(index=False)
-    uk_total_recovered = uk_value.recovered.to_string(index=False)
-    uk_total_critical = uk_value.critical.to_string(index=False)
-
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('UK')
 
 #-----------------------UK Cities Cases------------------------------------
 
@@ -232,7 +221,8 @@ def united_kingdom_cases(request):
 
 #---------------------------------------------------------------------------
 
-    context = {'uk_flag': uk_flag, 'uk_list': uk_list, 'plain_news_list': plain_news_list, 'uk_total_cases': uk_total_cases, 'uk_total_deaths': uk_total_deaths, 'uk_total_recovered': uk_total_recovered, 'uk_total_critical': uk_total_critical}
+    context = {'uk_flag': uk_flag, 'uk_list': uk_list, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 
+            'country_total_deaths': country_total_deaths, 'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "united_kingdom_cases.html", context)
 
@@ -246,20 +236,12 @@ def usa_cases(request):
 
 #---------------GET USA CONTENTS FROM COUNTRY API--------------------
 
-    df=pandas.DataFrame(world_data_json)
-
-    # Filter table with specific value
-    usa_value = df[df['country'] == 'USA']
-
-    # Convert to string without index value
-    usa_total_cases = usa_value.cases.to_string(index=False)
-    usa_total_deaths = usa_value.deaths.to_string(index=False)
-    usa_total_recovered = usa_value.recovered.to_string(index=False)
-    usa_total_critical = usa_value.critical.to_string(index=False)
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('USA')
 
 #-----------------------------------------------------------------
 
-    context = {'states': states_data_json, 'plain_news_list': plain_news_list, 'usa_total_cases': usa_total_cases, 'usa_total_deaths': usa_total_deaths, 'usa_total_recovered': usa_total_recovered, 'usa_total_critical': usa_total_critical}
+    context = {'states': states_data_json, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "usa_cases.html", context)
 
@@ -378,20 +360,29 @@ class ChartDataCountry(APIView):
         }
         return Response(data)
 
-def india_cases(request):
 
-#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+def get_specific_country_data(country):
 
     df=pandas.DataFrame(world_data_json)
 
     # Filter table with specific value
-    india_value = df[df['country'] == 'India']
+    country_value = df[df['country'] == country]
 
     # Convert to string without index value
-    india_total_cases = india_value.cases.to_string(index=False)
-    india_total_deaths = india_value.deaths.to_string(index=False)
-    india_total_recovered = india_value.recovered.to_string(index=False)
-    india_total_active = india_value.active.to_string(index=False)
+    country_total_cases = country_value.cases.to_string(index=False)
+    country_total_deaths = country_value.deaths.to_string(index=False)
+    country_total_recovered = country_value.recovered.to_string(index=False)
+    country_total_critical = country_value.critical.to_string(index=False)
+
+    return country_total_cases, country_total_deaths, country_total_recovered, country_total_critical
+
+
+def india_cases(request):
+
+#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('India')
+
 
 #-------------GET COUNTRY DATA FOR CHARTS--------------------------------
 
@@ -402,7 +393,8 @@ def india_cases(request):
 
 #-----------------------------------------------------------------
 
-    context = {'plain_news_list': plain_news_list, 'india_total_cases': india_total_cases, 'india_total_deaths': india_total_deaths, 'india_total_recovered': india_total_recovered, 'india_total_active': india_total_active}
+    context = {'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "india_cases.html", context)
 
@@ -410,16 +402,7 @@ def spain_cases(request):
 
 #---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
 
-    df=pandas.DataFrame(world_data_json)
-
-    # Filter table with specific value
-    spain_value = df[df['country'] == 'Spain']
-
-    # Convert to string without index value
-    spain_total_cases = spain_value.cases.to_string(index=False)
-    spain_total_deaths = spain_value.deaths.to_string(index=False)
-    spain_total_recovered = spain_value.recovered.to_string(index=False)
-    spain_total_critical = spain_value.critical.to_string(index=False)
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('Spain')
 
 #-------------GET COUNTRY DATA FOR CHARTS--------------------------------
 
@@ -430,8 +413,8 @@ def spain_cases(request):
 
 #-----------------------------------------------------------------
 
-    context = {'plain_news_list': plain_news_list, 'spain_total_cases': spain_total_cases, 'spain_total_deaths': spain_total_deaths,
-             'spain_total_recovered': spain_total_recovered, 'spain_total_critical': spain_total_critical}
+    context = {'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "spain_cases.html", context)
 
@@ -439,16 +422,7 @@ def italy_cases(request):
 
 #---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
 
-    df=pandas.DataFrame(world_data_json)
-
-    # Filter table with specific value
-    italy_value = df[df['country'] == 'Italy']
-
-    # Convert to string without index value
-    italy_total_cases = italy_value.cases.to_string(index=False)
-    italy_total_deaths = italy_value.deaths.to_string(index=False)
-    italy_total_recovered = italy_value.recovered.to_string(index=False)
-    italy_total_critical = italy_value.critical.to_string(index=False)
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('Italy')
 
 #-------------GET COUNTRY DATA FOR CHARTS--------------------------------
 
@@ -459,8 +433,8 @@ def italy_cases(request):
 
 #-----------------------------------------------------------------------
 
-    context = {'plain_news_list': plain_news_list, 'italy_total_cases': italy_total_cases, 'italy_total_deaths': italy_total_deaths,
-             'italy_total_recovered': italy_total_recovered, 'italy_total_critical': italy_total_critical}
+    context = {'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "italy_cases.html", context)
 
@@ -469,16 +443,7 @@ def germany_cases(request):
 
 #---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
 
-    # df=pandas.DataFrame(world_data_json)
-
-    # # Filter table with specific value
-    # germany_value = df[df['country'] == 'Germany']
-
-    # # Convert to string without index value
-    # italy_total_cases = germany_value.cases.to_string(index=False)
-    # italy_total_deaths = germany_value.deaths.to_string(index=False)
-    # italy_total_recovered = germany_value.recovered.to_string(index=False)
-    # italy_total_critical = germany_value.critical.to_string(index=False)
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('Germany')
 
 #-------------GET COUNTRY DATA FOR CHARTS--------------------------------
 
@@ -488,8 +453,28 @@ def germany_cases(request):
     api_obj.get_values(cases_dates, cases, deaths, recovered)
 
 #-----------------------------------------------------------------------
-    context = {}
-    # context = {'plain_news_list': plain_news_list, 'italy_total_cases': italy_total_cases, 'italy_total_deaths': italy_total_deaths,
-    #          'italy_total_recovered': italy_total_recovered, 'italy_total_critical': italy_total_critical}
+
+    context = {'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "germany_cases.html", context)
+
+def france_cases(request):
+
+#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('France')
+
+#-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+
+    cases_dates, cases, deaths, recovered = get_country_data('France')
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(cases_dates, cases, deaths, recovered)
+
+#-----------------------------------------------------------------------
+
+    context = {'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
+
+    return render(request, "france_cases.html", context)

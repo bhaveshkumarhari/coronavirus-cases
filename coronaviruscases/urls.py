@@ -20,5 +20,6 @@ urlpatterns = [
     path('spain-cases/', views.spain_cases, name="spain-cases"),
     path('italy-cases/', views.italy_cases, name="italy-cases"),
     path('germany-cases/', views.germany_cases, name="germany-cases"),
+    path('france-cases/', views.france_cases, name="france-cases"),
 
 ]
