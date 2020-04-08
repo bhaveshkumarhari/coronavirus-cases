@@ -22,6 +22,7 @@
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="{% static 'dark/assets/demo/demo.css' %}" rel="stylesheet" />
 
+
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162068390-1"></script>
   <script>
@@ -36,6 +37,7 @@
       
 
 <style>
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -57,12 +59,13 @@
 }
 
 
-th {
+/* th {
+  background-color: #132a41;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 2;
-}
+} */
 
 *:before, *:after {
     -webkit-box-sizing: border-box;
@@ -169,7 +172,7 @@ th {
           </li>
           <li class="nav-item">
             {% for item in plain_news_list %}
-            <a class="nav-link" href="">
+            <a class="nav-link" style="color: white;">
               <!-- <i class="material-icons">dashboard</i> -->
               {{item}}
             </a>
@@ -236,6 +239,9 @@ th {
           <div class="navbar-wrapper">
             <a class="navbar-brand" href="{% url 'home' %}" style="margin-left: 50px; margin-top: 5px;"><span style="color: #e50040;">Live</span> COVID-19 Global Cases</a>
           </div>
+
+          <!-- {% block country %} {% endblock country %} -->
+          
           <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
             <span class="sr-only">Toggle navigation</span>
             <span class="navbar-toggler-icon icon-bar"></span>
@@ -328,6 +334,9 @@ th {
   <script src="{% static 'dark/assets/js/material-dashboard.js' %}"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="{% static 'dark/assets/demo/demo.js' %}"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
   <script>
     $(document).ready(function() {
       $().ready(function() {
@@ -499,6 +508,55 @@ th {
   </script>
 
 <script>
+  function myFunctionToday() {
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInputToday");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTableToday");
+    tr = table.getElementsByTagName("tr");
+  
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+
+<script>
+  function myFunctionYesterday() {
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInputYesterday");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTableYesterday");
+    tr = table.getElementsByTagName("tr");
+  
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+
+
+<script>
   function myFunction() {
     // Declare variables
     var input, filter, table, tr, td, i, txtValue;
@@ -521,6 +579,13 @@ th {
     }
   }
 </script>
+
+<script>
+$(document).ready(function(){
+  {% block jquery %} {% endblock %}
+})
+</script>
+
 </body>
 
 </html>

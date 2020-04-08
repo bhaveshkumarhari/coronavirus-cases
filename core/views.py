@@ -1,4 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from django.views.generic import View
+from django.http import JsonResponse
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from django.contrib.auth import get_user_model
 
 import requests
 from bs4 import BeautifulSoup
@@ -6,6 +14,8 @@ from bs4 import BeautifulSoup
 import re
 import pandas
 import json
+
+User = get_user_model()
 
 r = requests.get("https://www.worldometers.info/coronavirus/")
 c = r.content
@@ -37,7 +47,7 @@ for item in some_news_list:
     removed_source = item.replace('[source]','')
     plain_news_list.append(removed_source)
 
-#--------------------------------------------------------------
+#-------------Live Data of all countries----------------------
 
 url = "https://corona.lmao.ninja/countries"
         
@@ -45,103 +55,144 @@ response = requests.request("GET", url)
 
 world_data_json = json.loads(response.text)
 
-#-------------------------------------------------------------------------
+
+print(world_data_json)
 
 def cases(request):
 
-    # total_cases = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "cases":
-    #             total_cases += value
-    #             string_total_cases = f"{total_cases:,d}"
+#-----------------New List of dictionaries--------------------
 
-    # total_new_cases = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "todayCases":
-    #             total_new_cases += value
-    #             string_total_new_cases = f"{total_new_cases:,d}"
+    new_list = []
+    for dict_item in world_data_json:
+        new_dict = {}
+        new_dict['flag'] = dict_item['countryInfo']['flag']
+        new_dict['country'] = dict_item['country']
+        new_dict['cases'] = dict_item['cases']
+        new_dict['todayCases'] = dict_item['todayCases']
+        new_dict['deaths'] = dict_item['deaths']
+        new_dict['todayDeaths'] = dict_item['todayDeaths']
+        new_dict['recovered'] = dict_item['recovered']
+        new_dict['active'] = dict_item['active']
+        new_dict['critical'] = dict_item['critical']
     
-    # total_deaths = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "deaths":
-    #             total_deaths += value
-    #             string_total_deaths = f"{total_deaths:,d}"
+        new_list.append(new_dict)
 
-    # total_new_deaths = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "todayDeaths":
-    #             total_new_deaths += value
-    #             string_total_new_deaths = f"{total_new_deaths:,d}"
+    now_df=pandas.DataFrame(new_list)
 
-    # total_recovered = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "recovered":
-    #             total_recovered += value
-    #             string_total_recovered = f"{total_recovered:,d}"
+    sorted_now_df = now_df.sort_values(by='cases', ascending=False)
+
+    converted_now_to_list = sorted_now_df.T.to_dict().values()
+
+#-----------------Total Live Data of the world----------------
+
+    url = "https://corona.lmao.ninja/all"
+        
+    response = requests.request("GET", url)
+
+    total_data_json = json.loads(response.text)
+
+    cases = total_data_json['cases']
+    deaths = total_data_json['deaths']
+    recovered = total_data_json['recovered']
+    critical = total_data_json['critical']
+
+    todayCases = total_data_json['todayCases']
+    todayDeaths = total_data_json['todayDeaths']
+    active = total_data_json['active']
+
+    #------------------Yesterday's Data---------------------------
+
+    url = "https://corona.lmao.ninja/yesterday"
     
-    # total_active_cases = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "active":
-    #             total_active_cases += value
-    #             string_total_active_cases = f"{total_active_cases:,d}"
+    response = requests.request("GET", url)
 
-    # total_critical = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "critical":
-    #             total_critical += value
-    #             string_total_critical = f"{total_critical:,d}"
+    yesterday_data_json = json.loads(response.text)
 
-            
-    # total_casesPerOneMillion = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "casesPerOneMillion":
-    #             try:
-    #                 float_value = float(value)
-    #             except:
-    #                 float_value = 0.0
-    #             total_casesPerOneMillion += float_value
-                # print(type(float_value))
-                    
-                # string_total_casesPerOneMillion = f"{total_casesPerOneMillion:,d}"
+    yesterday_new_list = []
+    for dict_item in yesterday_data_json:
+        new_dict = {}
+        new_dict['flag'] = dict_item['countryInfo']['flag']
+        new_dict['country'] = dict_item['country']
+        new_dict['cases'] = dict_item['cases']
+        new_dict['todayCases'] = dict_item['todayCases']
+        new_dict['deaths'] = dict_item['deaths']
+        new_dict['todayDeaths'] = dict_item['todayDeaths']
+        new_dict['recovered'] = dict_item['recovered']
+        new_dict['active'] = dict_item['active']
+        new_dict['critical'] = dict_item['critical']
+    
+        yesterday_new_list.append(new_dict)
 
-    # total_casesPerOneMillion = 0
-    # for item in world_data_json:
-    #     for key, value in item.items():
-    #         if key == "deathsPerOneMillion":
-    #             total_casesPerOneMillion += float(value)
-    #             string_total_casesPerOneMillion = f"{total_casesPerOneMillion:,d}"
+    yesterday_df=pandas.DataFrame(yesterday_new_list)
 
-    df=pandas.DataFrame(world_data_json)
+    yesterday_sorted_df = yesterday_df.sort_values(by='cases', ascending=False)
 
-    # Filter table with specific value
-    world_value = df[df['country'] == 'World']
+    yesterday_converted_to_list = yesterday_sorted_df.T.to_dict().values()
 
-    # Convert to string without index value
-    world_total_cases = world_value.cases.to_string(index=False)
-    world_total_deaths = world_value.deaths.to_string(index=False)
-    world_total_recovered = world_value.recovered.to_string(index=False)
-    world_total_critical = world_value.critical.to_string(index=False)
 
-    world_total_todayCases = world_value.todayCases.to_string(index=False)
-    world_total_todayDeaths = world_value.todayDeaths.to_string(index=False)
-    world_total_active = world_value.active.to_string(index=False)
+    total_cases = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "cases":
+                total_cases += value
 
-    context = {'country': world_data_json, 'plain_news_list': plain_news_list, 'world_total_cases': world_total_cases, 'world_total_deaths': world_total_deaths, 'world_total_recovered': world_total_recovered, 
-    'world_total_critical': world_total_critical,'world_total_todayCases':world_total_todayCases, 'world_total_todayDeaths': world_total_todayDeaths, 'world_total_active':world_total_active}
+    total_todayCases = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "todayCases":
+                total_todayCases += value
+
+    total_deaths = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "deaths":
+                total_deaths += value
+
+    total_todayDeaths = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "todayDeaths":
+                total_todayDeaths += value
+
+    total_recovered = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "recovered":
+                total_recovered += value
+
+    total_active = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "active":
+                total_active += value
+    
+    total_critical = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "critical":
+                total_critical += value
+
+    context = {'country': converted_now_to_list, 'plain_news_list': plain_news_list, 'cases': cases,
+                'deaths': deaths, 'recovered': recovered, 'critical': critical,
+                'todayCases': todayCases, 'todayDeaths': todayDeaths, 'active': active,
+                'yesterday_data':yesterday_converted_to_list, 'total_cases':total_cases, 'total_todayCases':total_todayCases, 
+                'total_deaths':total_deaths, 'total_todayDeaths':total_todayDeaths, 'total_recovered':total_recovered, 'total_active':total_active, 
+                'total_critical':total_critical}
 
     return render(request, "dashboard.html", context)
 
 def united_kingdom_cases(request):
     
+#------------------UK Flag----------------------------------------
+
+    for dict_item in world_data_json:
+        new_dict = {}
+        if dict_item['country'] == 'UK':
+            new_dict['flag'] = dict_item['countryInfo']['flag']
+            uk_flag = new_dict.get('flag')
+
 #------------------UK data from world cases API-------------------------------
+
 
     df=pandas.DataFrame(world_data_json)
 
@@ -184,7 +235,7 @@ def united_kingdom_cases(request):
 
 #---------------------------------------------------------------------------
 
-    context = {'uk_list': uk_list, 'plain_news_list': plain_news_list, 'uk_total_cases': uk_total_cases, 'uk_total_deaths': uk_total_deaths, 'uk_total_recovered': uk_total_recovered, 'uk_total_critical': uk_total_critical}
+    context = {'uk_flag': uk_flag, 'uk_list': uk_list, 'plain_news_list': plain_news_list, 'uk_total_cases': uk_total_cases, 'uk_total_deaths': uk_total_deaths, 'uk_total_recovered': uk_total_recovered, 'uk_total_critical': uk_total_critical}
 
     return render(request, "united_kingdom_cases.html", context)
 
@@ -232,3 +283,150 @@ def terms_conditions(request):
     context = {'plain_news_list': plain_news_list}
 
     return render(request, "terms_conditions.html", context)
+
+# class world(View):
+#     def get(self, request, *args, **kwargs):
+#         return render(request, 'world.html')
+
+class ChartData(APIView):
+
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+
+        url = "https://corona.lmao.ninja/v2/historical/all"
+                
+        response = requests.request("GET", url)
+
+        world_data_json = json.loads(response.text)
+
+        cases_date =[]
+        confirmed_cases = []
+        cases_dict = world_data_json['cases']
+        for key, value in cases_dict.items():
+            cases_date.append(key)
+            confirmed_cases.append(value)
+
+        deaths_date =[]
+        deaths = []
+        cases_dict = world_data_json['deaths']
+        for key, value in cases_dict.items():
+            deaths_date.append(key)
+            deaths.append(value)
+
+        recovered_date =[]
+        recovered = []
+        cases_dict = world_data_json['recovered']
+        for key, value in cases_dict.items():
+            recovered_date.append(key)
+            recovered.append(value)
+
+        # labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange']
+        # default_items = [234, 134, 133, 32, 34, 5]
+
+        data = {
+            "cases_date": cases_date,
+            "confirmed_cases": confirmed_cases,
+            "deaths_date": deaths_date,
+            "deaths": deaths,
+            "recovered_date": recovered_date,
+            "recovered": recovered,
+            
+        }
+        return Response(data)
+
+class ChartDataCountry(APIView):
+
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+
+        url = "https://pomber.github.io/covid19/timeseries.json"
+    
+        response = requests.request("GET", url)
+
+        data_json = json.loads(response.text)
+
+        india_cases_dates = []
+        india_cases = []
+        india_deaths = []
+        india_recovered = []
+        for key, value in data_json.items():
+            if key == "India":
+                counts = len(value)
+                for count in range(counts):
+                    india_cases_dates.append(value[count]['date'])
+                    india_cases.append(value[count]['confirmed'])
+                    india_deaths.append(value[count]['deaths'])
+                    india_recovered.append(value[count]['recovered'])
+
+        spain_cases_dates = []
+        spain_cases = []
+        spain_deaths = []
+        spain_recovered = []
+        for key, value in data_json.items():
+            if key == "Spain":
+                counts = len(value)
+                for count in range(counts):
+                    spain_cases_dates.append(value[count]['date'])
+                    spain_cases.append(value[count]['confirmed'])
+                    spain_deaths.append(value[count]['deaths'])
+                    spain_recovered.append(value[count]['recovered'])
+                    
+        data = {
+            "cases_date": india_cases_dates,
+            "confirmed_cases": india_cases,
+            "deaths": india_deaths, 
+            "recovered": india_recovered,
+
+            "spain_cases_dates": spain_cases_dates,
+            "spain_cases": spain_cases,
+            "spain_deaths": spain_deaths, 
+            "spain_recovered": spain_recovered,
+        }
+        return Response(data)
+
+def india_cases(request):
+
+#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+
+    df=pandas.DataFrame(world_data_json)
+
+    # Filter table with specific value
+    india_value = df[df['country'] == 'India']
+
+    # Convert to string without index value
+    india_total_cases = india_value.cases.to_string(index=False)
+    india_total_deaths = india_value.deaths.to_string(index=False)
+    india_total_recovered = india_value.recovered.to_string(index=False)
+    india_total_active = india_value.active.to_string(index=False)
+
+#-----------------------------------------------------------------
+
+    context = {'plain_news_list': plain_news_list, 'india_total_cases': india_total_cases, 'india_total_deaths': india_total_deaths, 'india_total_recovered': india_total_recovered, 'india_total_active': india_total_active}
+
+    return render(request, "india_cases.html", context)
+
+def spain_cases(request):
+
+#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+
+    df=pandas.DataFrame(world_data_json)
+
+    # Filter table with specific value
+    spain_value = df[df['country'] == 'Spain']
+
+    # Convert to string without index value
+    spain_total_cases = spain_value.cases.to_string(index=False)
+    spain_total_deaths = spain_value.deaths.to_string(index=False)
+    spain_total_recovered = spain_value.recovered.to_string(index=False)
+    spain_total_critical = spain_value.critical.to_string(index=False)
+
+#-----------------------------------------------------------------
+
+    context = {'plain_news_list': plain_news_list, 'spain_total_cases': spain_total_cases, 'spain_total_deaths': spain_total_deaths,
+             'spain_total_recovered': spain_total_recovered, 'spain_total_critical': spain_total_critical}
+
+    return render(request, "spain_cases.html", context)
