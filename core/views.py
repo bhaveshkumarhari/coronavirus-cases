@@ -55,9 +55,6 @@ response = requests.request("GET", url)
 
 world_data_json = json.loads(response.text)
 
-
-print(world_data_json)
-
 def cases(request):
 
 #-----------------New List of dictionaries--------------------
@@ -336,55 +333,48 @@ class ChartData(APIView):
         }
         return Response(data)
 
+def get_country_data(country):
+
+    url = "https://pomber.github.io/covid19/timeseries.json"
+    
+    response = requests.request("GET", url)
+
+    data_json = json.loads(response.text)
+
+    cases_dates = []
+    cases = []
+    deaths = []
+    recovered = []
+    for key, value in data_json.items():
+        if key == country:
+            counts = len(value)
+            for count in range(counts):
+                cases_dates.append(value[count]['date'])
+                cases.append(value[count]['confirmed'])
+                deaths.append(value[count]['deaths'])
+                recovered.append(value[count]['recovered'])
+
+    return cases_dates, cases, deaths, recovered
+
 class ChartDataCountry(APIView):
 
     authentication_classes = []
     permission_classes = []
 
+    def get_values(self, *args, **kwargs):
+        global cases_dates, cases, deaths, recovered
+        cases_dates = args[0]
+        cases = args[1]
+        deaths = args[2]
+        recovered = args[3]
+
     def get(self, request, format=None):
-
-        url = "https://pomber.github.io/covid19/timeseries.json"
-    
-        response = requests.request("GET", url)
-
-        data_json = json.loads(response.text)
-
-        india_cases_dates = []
-        india_cases = []
-        india_deaths = []
-        india_recovered = []
-        for key, value in data_json.items():
-            if key == "India":
-                counts = len(value)
-                for count in range(counts):
-                    india_cases_dates.append(value[count]['date'])
-                    india_cases.append(value[count]['confirmed'])
-                    india_deaths.append(value[count]['deaths'])
-                    india_recovered.append(value[count]['recovered'])
-
-        spain_cases_dates = []
-        spain_cases = []
-        spain_deaths = []
-        spain_recovered = []
-        for key, value in data_json.items():
-            if key == "Spain":
-                counts = len(value)
-                for count in range(counts):
-                    spain_cases_dates.append(value[count]['date'])
-                    spain_cases.append(value[count]['confirmed'])
-                    spain_deaths.append(value[count]['deaths'])
-                    spain_recovered.append(value[count]['recovered'])
-                    
+          
         data = {
-            "cases_date": india_cases_dates,
-            "confirmed_cases": india_cases,
-            "deaths": india_deaths, 
-            "recovered": india_recovered,
-
-            "spain_cases_dates": spain_cases_dates,
-            "spain_cases": spain_cases,
-            "spain_deaths": spain_deaths, 
-            "spain_recovered": spain_recovered,
+            "cases_dates": cases_dates,
+            "cases": cases,
+            "deaths": deaths, 
+            "recovered": recovered,
         }
         return Response(data)
 
@@ -402,6 +392,13 @@ def india_cases(request):
     india_total_deaths = india_value.deaths.to_string(index=False)
     india_total_recovered = india_value.recovered.to_string(index=False)
     india_total_active = india_value.active.to_string(index=False)
+
+#-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+
+    cases_dates, cases, deaths, recovered = get_country_data('India')
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(cases_dates, cases, deaths, recovered)
 
 #-----------------------------------------------------------------
 
@@ -424,9 +421,75 @@ def spain_cases(request):
     spain_total_recovered = spain_value.recovered.to_string(index=False)
     spain_total_critical = spain_value.critical.to_string(index=False)
 
+#-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+
+    cases_dates, cases, deaths, recovered = get_country_data('Spain')
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(cases_dates, cases, deaths, recovered)
+
 #-----------------------------------------------------------------
 
     context = {'plain_news_list': plain_news_list, 'spain_total_cases': spain_total_cases, 'spain_total_deaths': spain_total_deaths,
              'spain_total_recovered': spain_total_recovered, 'spain_total_critical': spain_total_critical}
 
     return render(request, "spain_cases.html", context)
+
+def italy_cases(request):
+
+#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+
+    df=pandas.DataFrame(world_data_json)
+
+    # Filter table with specific value
+    italy_value = df[df['country'] == 'Italy']
+
+    # Convert to string without index value
+    italy_total_cases = italy_value.cases.to_string(index=False)
+    italy_total_deaths = italy_value.deaths.to_string(index=False)
+    italy_total_recovered = italy_value.recovered.to_string(index=False)
+    italy_total_critical = italy_value.critical.to_string(index=False)
+
+#-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+
+    cases_dates, cases, deaths, recovered = get_country_data('Italy')
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(cases_dates, cases, deaths, recovered)
+
+#-----------------------------------------------------------------------
+
+    context = {'plain_news_list': plain_news_list, 'italy_total_cases': italy_total_cases, 'italy_total_deaths': italy_total_deaths,
+             'italy_total_recovered': italy_total_recovered, 'italy_total_critical': italy_total_critical}
+
+    return render(request, "italy_cases.html", context)
+
+
+def germany_cases(request):
+
+#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+
+    # df=pandas.DataFrame(world_data_json)
+
+    # # Filter table with specific value
+    # germany_value = df[df['country'] == 'Germany']
+
+    # # Convert to string without index value
+    # italy_total_cases = germany_value.cases.to_string(index=False)
+    # italy_total_deaths = germany_value.deaths.to_string(index=False)
+    # italy_total_recovered = germany_value.recovered.to_string(index=False)
+    # italy_total_critical = germany_value.critical.to_string(index=False)
+
+#-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+
+    cases_dates, cases, deaths, recovered = get_country_data('Germany')
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(cases_dates, cases, deaths, recovered)
+
+#-----------------------------------------------------------------------
+    context = {}
+    # context = {'plain_news_list': plain_news_list, 'italy_total_cases': italy_total_cases, 'italy_total_deaths': italy_total_deaths,
+    #          'italy_total_recovered': italy_total_recovered, 'italy_total_critical': italy_total_critical}
+
+    return render(request, "germany_cases.html", context)

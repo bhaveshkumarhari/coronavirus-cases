@@ -18,5 +18,7 @@ urlpatterns = [
     path('api/chart/data/country/', ChartDataCountry.as_view()),
 
     path('spain-cases/', views.spain_cases, name="spain-cases"),
+    path('italy-cases/', views.italy_cases, name="italy-cases"),
+    path('germany-cases/', views.germany_cases, name="germany-cases"),
 
 ]

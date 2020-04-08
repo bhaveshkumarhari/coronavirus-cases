@@ -327,6 +327,8 @@ function setChart(){
                                                 <td><b><u><a href="{% url 'india-cases' %}">{{ value }}</a></u></b></td>
                                             {% elif value == 'Spain' %}
                                                 <td><b><u><a href="{% url 'spain-cases' %}">{{ value }}</a></u></b></td>
+                                            {% elif value == 'Italy' %}
+                                                <td><b><u><a href="{% url 'italy-cases' %}">{{ value }}</a></u></b></td>
                                             {% else %}
                                                 <td><b><u>{{ value }}</u></b></td>
                                             {% endif %}                
