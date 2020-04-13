@@ -324,15 +324,25 @@ function setChart(){
                                             {% elif value == 'USA' %}
                                                 <td><b><u><a href="{% url 'usa-cases' %}">{{ value }}</a></u></b></td>
                                             {% elif value == 'India' %}
-                                                <td><b><u><a href="{% url 'india-cases' %}">{{ value }}</a></u></b></td>
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
                                             {% elif value == 'Spain' %}
-                                                <td><b><u><a href="{% url 'spain-cases' %}">{{ value }}</a></u></b></td>
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
                                             {% elif value == 'Italy' %}
-                                                <td><b><u><a href="{% url 'italy-cases' %}">{{ value }}</a></u></b></td>
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
                                             {% elif value == 'Germany' %}
-                                                <td><b><u><a href="{% url 'germany-cases' %}">{{ value }}</a></u></b></td>
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
                                             {% elif value == 'France' %}
-                                                <td><b><u><a href="{% url 'france-cases' %}">{{ value }}</a></u></b></td>
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
+                                            {% elif value == 'China' %}
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
+                                            {% elif value == 'Iran' %}
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
+                                            {% elif value == 'Turkey' %}
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
+                                            {% elif value == 'Belgium' %}
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
+                                            {% elif value == 'Yemen' %}
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
                                             {% else %}
                                                 <td><b><u>{{ value }}</u></b></td>
                                             {% endif %}                

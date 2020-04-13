@@ -11,15 +11,14 @@ urlpatterns = [
     path('usa-cases/', views.usa_cases, name="usa-cases"),
     path('privacy-policy/', views.privacy_policy, name="privacy-policy"),
     path('terms-and-conditions/', views.terms_conditions, name="terms-and-conditions"),
-    # path('world/', world.as_view(), name="world"),
+
     path('api/chart/data/', ChartData.as_view()),
 
-    path('india-cases/', views.india_cases, name="india-cases"),
-    path('api/chart/data/country/', ChartDataCountry.as_view()),
+    path('country/<str:country>/', views.countryView, name="country"),
+    path('api/chart/data/country/<str:country>/', ChartDataCountry.as_view()),
 
-    path('spain-cases/', views.spain_cases, name="spain-cases"),
-    path('italy-cases/', views.italy_cases, name="italy-cases"),
-    path('germany-cases/', views.germany_cases, name="germany-cases"),
-    path('france-cases/', views.france_cases, name="france-cases"),
+    path('webmap/', views.webmap, name="webmap"),
+
+    path('upload/', views.upload_file, name="upload"),
 
 ]
