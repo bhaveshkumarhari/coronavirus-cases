@@ -262,7 +262,7 @@ function setChart(){
                         </button> -->
                       </div>
                     </br>
-                        <table id="myTableToday" class="table table-hover" cellspacing="0" width="100%">
+                        <table id="myTableToday" class="table table-hover tablesorter" cellspacing="0" width="100%">
                             <thead>
                               <tr>
                                 <th>
@@ -283,6 +283,8 @@ function setChart(){
                                 </th>
                                 <th>Critical
                                 </th>
+                                <th>Total Tests
+                                </th>
                                 <!-- <th>Cases/1M Pop
                                 </th>
                                 <th>Deaths/1M Pop
@@ -301,6 +303,7 @@ function setChart(){
                                 <td>{{ recovered|intcomma }}</td>
                                 <td>{{ active|intcomma }}</td>
                                 <td>{{ critical|intcomma }}</td>
+                                <td>{{ tests|intcomma }}</td>
                               </tr>
                               {% for item in country %}
                                 <tr>
@@ -323,29 +326,9 @@ function setChart(){
                                                 <td><b><u><a href="{% url 'united-kingdom-cases' %}">{{ value }}</a></u></b></td>
                                             {% elif value == 'USA' %}
                                                 <td><b><u><a href="{% url 'usa-cases' %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'India' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'Spain' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'Italy' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'Germany' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'France' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'China' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'Iran' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'Turkey' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'Belgium' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'Yemen' %}
-                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
                                             {% else %}
-                                                <td><b><u>{{ value }}</u></b></td>
-                                            {% endif %}                
+                                                <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
+                                            {% endif %}
                                         {% endif %}
                                         {% if key == 'cases' %}
                                             <td>{{ value|intcomma }}</td>
@@ -392,6 +375,13 @@ function setChart(){
                                                 <td>{{ value|intcomma }}</td>
                                             {% endif %}
                                         {% endif %}
+                                        {% if key == 'tests' %}
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ value|intcomma }}</td>
+                                            {% endif %}
+                                        {% endif %}
                                     {% endfor %}
                                 </tr>
                               {% endfor %}
@@ -416,6 +406,8 @@ function setChart(){
                                 <th>{{ active|intcomma }}
                                 </th>
                                 <th>{{ critical|intcomma }}
+                                </th>
+                                <th>{{ tests|intcomma }}
                                 </th>
                               </tr>
                             </tfoot>
@@ -450,6 +442,8 @@ function setChart(){
                                 </th>
                                 <th>Critical
                                 </th>
+                                <th>Total Tests
+                                </th>
                                 <!-- <th>Cases/1M Pop
                                 </th>
                                 <th>Deaths/1M Pop
@@ -467,6 +461,7 @@ function setChart(){
                                   <td>{{ total_recovered|intcomma }}</td>
                                   <td>{{ total_active|intcomma }}</td>
                                   <td>{{ total_critical|intcomma }}</td>
+                                  <td>{{ total_tests|intcomma }}</td>
                                 </tr>
                                 {% for item in yesterday_data %}
                                 <tr>
@@ -522,6 +517,13 @@ function setChart(){
                                                 <td>{{ value|intcomma }}</td>
                                             {% endif %}
                                         {% endif %}
+                                        {% if key == 'tests' %}
+                                            {% if value == 0 %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ value|intcomma }}</td>
+                                            {% endif %}
+                                        {% endif %}
                                     {% endfor %}
                                 </tr>
                                 {% endfor %}
@@ -544,6 +546,8 @@ function setChart(){
                                 <th>{{ total_active|intcomma }}
                                 </th>
                                 <th>{{ total_critical|intcomma }}
+                                </th>
+                                <th>{{ total_tests|intcomma }}
                                 </th>
                               </tr>
                             </tfoot>

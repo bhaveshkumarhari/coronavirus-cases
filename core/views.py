@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views.generic import View
 from django.http import JsonResponse
@@ -54,11 +54,12 @@ for item in some_news_list:
 
 #-------------Live Data of all countries----------------------
 
-url = "https://corona.lmao.ninja/countries"
+url = "https://corona.lmao.ninja/v2/countries"
         
 response = requests.request("GET", url)
 
 world_data_json = json.loads(response.text)
+
 
 def cases(request):
 
@@ -76,6 +77,7 @@ def cases(request):
         new_dict['recovered'] = dict_item['recovered']
         new_dict['active'] = dict_item['active']
         new_dict['critical'] = dict_item['critical']
+        new_dict['tests'] = dict_item['tests']
     
         new_list.append(new_dict)
 
@@ -87,11 +89,13 @@ def cases(request):
 
 #-----------------Total Live Data of the world----------------
 
-    url = "https://corona.lmao.ninja/all"
+    url = "https://corona.lmao.ninja/v2/all"
         
     response = requests.request("GET", url)
 
     total_data_json = json.loads(response.text)
+
+    # print(total_data_json)
 
     cases = total_data_json['cases']
     deaths = total_data_json['deaths']
@@ -101,14 +105,17 @@ def cases(request):
     todayCases = total_data_json['todayCases']
     todayDeaths = total_data_json['todayDeaths']
     active = total_data_json['active']
+    tests = total_data_json['tests']
 
     #------------------Yesterday's Data---------------------------
 
-    url = "https://corona.lmao.ninja/yesterday"
+    url = "https://corona.lmao.ninja/v2/countries?yesterday=true"
     
     response = requests.request("GET", url)
 
     yesterday_data_json = json.loads(response.text)
+
+    # print(yesterday_data_json)
 
     yesterday_new_list = []
     for dict_item in yesterday_data_json:
@@ -122,6 +129,7 @@ def cases(request):
         new_dict['recovered'] = dict_item['recovered']
         new_dict['active'] = dict_item['active']
         new_dict['critical'] = dict_item['critical']
+        new_dict['tests'] = dict_item['tests']
     
         yesterday_new_list.append(new_dict)
 
@@ -174,12 +182,18 @@ def cases(request):
             if key == "critical":
                 total_critical += value
 
+    total_tests = 0
+    for item in yesterday_data_json:
+        for key, value in item.items():
+            if key == "tests":
+                total_tests += value
+
     context = {'country': converted_now_to_list, 'plain_news_list': plain_news_list, 'cases': cases,
                 'deaths': deaths, 'recovered': recovered, 'critical': critical,
-                'todayCases': todayCases, 'todayDeaths': todayDeaths, 'active': active,
+                'todayCases': todayCases, 'todayDeaths': todayDeaths, 'active': active, 'tests': tests,
                 'yesterday_data':yesterday_converted_to_list, 'total_cases':total_cases, 'total_todayCases':total_todayCases, 
                 'total_deaths':total_deaths, 'total_todayDeaths':total_todayDeaths, 'total_recovered':total_recovered, 'total_active':total_active, 
-                'total_critical':total_critical}
+                'total_critical':total_critical, 'total_tests':total_tests}
 
     return render(request, "dashboard.html", context)
 
@@ -224,16 +238,23 @@ def united_kingdom_cases(request):
         # Create list of dictionary
         uk_list.append(dict_data)
 
+#-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+
+    country, cases_dates, cases, deaths, recovered = get_country_data("United Kingdom")
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(country, cases_dates, cases, deaths, recovered)
+
 #---------------------------------------------------------------------------
 
-    context = {'uk_flag': uk_flag, 'uk_list': uk_list, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 
+    context = {'country': "United Kingdom", 'uk_list': uk_list, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 
             'country_total_deaths': country_total_deaths, 'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "united_kingdom_cases.html", context)
 
 def usa_cases(request):
 
-    url = "https://corona.lmao.ninja/states"
+    url = "https://corona.lmao.ninja/v2/states"
     
     response = requests.request("GET", url)
 
@@ -337,6 +358,8 @@ def get_country_data(country):
                 deaths.append(value[count]['deaths'])
                 recovered.append(value[count]['recovered'])
 
+    # print(cases_dates)
+
     return country, cases_dates, cases, deaths, recovered
 
 class ChartDataCountry(APIView):
@@ -391,8 +414,11 @@ def countryView(request, country):
 
     country, cases_dates, cases, deaths, recovered = get_country_data(country)
 
-    api_obj = ChartDataCountry()
-    api_obj.get_values(country, cases_dates, cases, deaths, recovered)
+    if cases_dates == []:
+        return redirect('country-without-chart', country=country)
+    else :
+        api_obj = ChartDataCountry()
+        api_obj.get_values(country, cases_dates, cases, deaths, recovered)
 
 #-----------------------------------------------------------------
 
@@ -402,138 +428,14 @@ def countryView(request, country):
     return render(request, "country_cases.html", context)
 
 
-def webmap(request):
-    import geopandas as gpd
-    shapefile = 'static/webmap/data/countries/ne_110m_admin_0_countries.shp'
+def countryWithoutChart(request, country):
 
-    #Read shapefile using Geopandas
-    gdf = gpd.read_file(shapefile)[['ADMIN', 'ADM0_A3', 'geometry']]
-    #Rename columns.
-    gdf.columns = ['country', 'country_code', 'geometry']
-    gdf.head()
+#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
 
-    print(gdf[gdf['country'] == 'Antarctica'])
-    #Drop row corresponding to 'Antarctica'
-    gdf = gdf.drop(gdf.index[159])
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data(country)
 
-    import requests
-    import json
-    import pandas
+    context = {'country': country, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
-    from bokeh.models import LinearColorMapper
+    return render(request, "country_without_chart.html", context)
 
-    url = "https://corona.lmao.ninja/countries"
-        
-    response = requests.request("GET", url)
-
-    data_json = json.loads(response.text)
-
-    list_data = []
-    for item in data_json:
-        dict_data = {}
-        dict_data['entity'] = item['country']
-        dict_data['code'] = item['countryInfo']['iso3']
-        dict_data['cases'] = item['cases']
-        dict_data['deaths'] = item['deaths']
-        dict_data['recovered'] = item['recovered']
-        dict_data['year'] = 2020
-        list_data.append(dict_data)
-
-        
-    df = pandas.DataFrame(list_data)
-    
-    df.info()
-    df[df['code'].isnull()]
-
-    #Filter data for year 2016.
-    df_2020 = df[df['year'] == 2020]
-    #Merge dataframes gdf and df_2016.
-    merged = gdf.merge(df_2020, left_on = 'country_code', right_on = 'code')
-
-    import json
-    #Read data to json.
-    merged_json = json.loads(merged.to_json())
-    #Convert to String like object.
-    json_data = json.dumps(merged_json)
-
-    #Instantiate LinearColorMapper that maps numbers in a range linearly into a sequence of colors. Input nan_color.
-    # color_mapper = LinearColorMapper(palette = palette, low = 0, high = 40, nan_color = '#d9d9d9')
-
-    from bokeh.io import curdoc, output_notebook
-    from bokeh.models import Slider, HoverTool
-    from bokeh.layouts import widgetbox, row, column
-    from bokeh.models import Column
-    
-    #Define function that returns json_data for year selected by user.
-        
-    def json_data(selectedYear):
-        yr = selectedYear
-        df_yr = df[df['year'] == yr]
-        merged = gdf.merge(df_yr, left_on = 'country_code', right_on = 'code', how = 'left')
-        merged.fillna('No data', inplace = True)
-        merged_json = json.loads(merged.to_json())
-        json_data = json.dumps(merged_json)
-        return json_data
-    #Input GeoJSON source that contains features for plotting.
-    geosource = GeoJSONDataSource(geojson = json_data(2020))
-
-    
-    #Define a sequential multi-hue color palette.
-    palette = brewer['OrRd'][8]
-    #Reverse color order so that dark red is highest obesity.
-    palette = palette[::-1]
-    #Instantiate LinearColorMapper that linearly maps numbers in a range, into a sequence of colors. Input nan_color.
-    color_mapper = LinearColorMapper(palette = palette, low = 0, high = 90, nan_color = '#d9d9d9')
-    #Define custom tick labels for color bar.
-    tick_labels = {'0': '0%', '10':'10%', '15':'15%', '20':'20%', '25':'25%', '30':'30%','35':'35%', '40':'40%', '45':'45%', '50':'50%', '55':'55%', '60':'60%', '65':'65%', '70':'70%', '75':'75%', '80':'80%','85':'85%', '90': '>90%'}
-    #Add hover tool
-    hover = HoverTool(tooltips = [ ('Country/region','@country'),('Confirmed Cases', '@cases'),('Total Deaths', '@deaths'),('Total Recovered', '@recovered')])
-    #Create color bar. 
-    color_bar = ColorBar(color_mapper=color_mapper, label_standoff=8,width = 500, height = 20,
-                        border_line_color=None,location = (0,0), orientation = 'horizontal', major_label_overrides = tick_labels)
-    #Create figure object.
-    p = figure(title = 'Share of adults who are obese, 2016', plot_height = 600 , plot_width = 950, toolbar_location = None, tools = [hover])
-    p.xgrid.grid_line_color = None
-    p.ygrid.grid_line_color = None
-    #Add patch renderer to figure. 
-    p.patches('xs','ys', source = geosource,fill_color = {'field' :'cases', 'transform' : color_mapper},
-            line_color = 'black', line_width = 0.25, fill_alpha = 1)
-    #Specify layout
-    p.add_layout(color_bar, 'below')
-    # Define the callback function: update_plot
-    def update_plot(attr, old, new):
-        yr = slider.value
-        new_data = json_data(yr)
-        geosource.geojson = new_data
-        p.title.text = 'Share of adults who are obese, %d' %yr
-        
-    # Make a slider object: slider 
-    slider = Slider(title = 'Year',start = 2019, end = 2020, step = 1, value = 2020)
-    slider.on_change('value', update_plot)
-    # # Make a column layout of widgetbox(slider) and plot, and add it to the current document
-    layout = column(p,Column(slider))
-    curdoc().add_root(layout)
-    #Display plot inline in Jupyter notebook
-    output_notebook()
-    #Display plot
-    show(layout)
-
-    context = {}
-
-    return render(request, "webmap.html", context)
-
-
-def upload_file(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_file(request.FILES['file'])
-            return HttpResponseRedirect('/')
-    else:
-        form = UploadFileForm()
-    return render(request, 'upload.html', {'form': form})
-
-def handle_uploaded_file(f):
-    with open('webmap.shp', 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
