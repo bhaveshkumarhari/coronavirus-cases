@@ -1,0 +1,200 @@
+{% extends 'base.html'%}
+{% load static %}
+{% load humanize %}
+
+
+<script>
+{% block jquery %}
+
+var endpoint = '/api/chart/data/country/{{ country1 }}/{{ country2 }}/'
+
+var confirmed_cases1 = []
+var cases_date1 = []
+var deaths1 = []
+var recovered1 = []
+
+var confirmed_cases2 = []
+var cases_date2 = []
+var deaths2 = []
+var recovered2 = []
+
+
+$.ajax({
+    method: "GET",
+    url: endpoint,
+    success: function(data){
+        country1 = data.country1
+        cases_date1 = data.cases_dates1
+        confirmed_cases1 = data.cases1
+        deaths1 = data.deaths1
+        recovered1 = data.recovered1
+
+        country2 = data.country2
+        cases_date2 = data.cases_dates2
+        confirmed_cases2 = data.cases2
+        deaths2 = data.deaths2
+        recovered2 = data.recovered2
+        setChart()
+    },
+    error: function(error_data){
+        console.log("error")
+        console.log(error_data)
+    }
+})
+
+function setChart(){
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: cases_date1,
+            datasets: [{
+                label: 'Confirmed cases',
+                data: confirmed_cases1,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                ],
+                borderWidth: 2
+            }, {
+                label: 'Total Deaths',
+                data: deaths1,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 2
+            }, {
+                label: 'Total Recovered',
+                data: recovered1,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var myChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: cases_date2,
+            datasets: [{
+                label: 'Confirmed cases',
+                data: confirmed_cases2,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                ],
+                borderWidth: 2
+            }, {
+                label: 'Total Deaths',
+                data: deaths2,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 2
+            }, {
+                label: 'Total Recovered',
+                data: recovered2,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
+{% endblock %}
+</script>
+
+{% block content %}
+      <div class="content">
+        <div class="container-fluid">
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <!-- <h4 class="card-title">Employees Stats</h4> -->
+                  <form class="form-inline" method="POST">
+                    {% csrf_token %}
+                    <label for="country">First country: </label>
+                    <select name="country1" id="country">
+                    {% for key, value in dict_data.items %}
+                    <option value="{{key}}">{{key}}</option>
+                    {% endfor %}
+                    </select>
+
+                    <label for="country">Second country: </label>
+                    <select name="country2" id="country">
+                    {% for key, value in dict_data.items %}
+                    <option value="{{key}}">{{key}}</option>
+                    {% endfor %}
+                    </select>
+                    <input type="submit" class="btn btn-primary" value="Compare">
+                  </form>
+                
+                  </ul>
+                </div>
+               
+                <div class="card-body">
+                  <div class="row">
+                      <div class='col-sm-6'>
+                            <h4 style="text-align: center;">Current state in {{ country1 }}</h4>
+                            <canvas id="myChart" width="400" height="300"></canvas>
+                      </div>
+                      <br>
+                      <div class='col-sm-6'>
+                        <h4 style="text-align: center;">Current state in {{ country2 }}</h4>
+                        <canvas id="myChart2" width="400" height="300"></canvas>
+                      </div>
+                    </div>
+                    <br>
+
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+{% endblock content %}

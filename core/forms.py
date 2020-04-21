@@ -1,5 +1,5 @@
 from django import forms
 
-class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=50)
-    file = forms.FileField()
+class ContactForm(forms.Form):
+    country1 = forms.CharField()
+    country2 = forms.CharField()

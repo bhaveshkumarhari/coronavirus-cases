@@ -4,7 +4,8 @@ from django.views.generic import View
 from django.http import JsonResponse
 
 from django.http import HttpResponseRedirect
-from .forms import UploadFileForm
+
+from .forms import ContactForm
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 
@@ -405,37 +406,140 @@ def get_specific_country_data(country):
 
 def countryView(request, country):
 
-#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+#---------------GET COUNTRY CONTENTS FROM COUNTRY API--------------------
 
     country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data(country)
 
-
-#-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+#-------------GET COUNTRY DATA FOR LINE CHARTS--------------------------------
 
     country, cases_dates, cases, deaths, recovered = get_country_data(country)
 
+    chart_available = True
     if cases_dates == []:
-        return redirect('country-without-chart', country=country)
-    else :
-        api_obj = ChartDataCountry()
-        api_obj.get_values(country, cases_dates, cases, deaths, recovered)
+        chart_available = False
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(country, cases_dates, cases, deaths, recovered)
+
+#-------------GET COUNTRY DATA FOR BAR CHARTS--------------------------------
+
+
 
 #-----------------------------------------------------------------
 
-    context = {'country': country, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+    context = {'chart_available': chart_available, 'country': country, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
              'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "country_cases.html", context)
+    
+
+class ChartDataCompareCountry(APIView):
+    
+    authentication_classes = []
+    permission_classes = []
+
+    def get_values(self, *args, **kwargs):
+        global country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2
+        
+        country1 = args[0]
+        cases_dates1 = args[1]
+        cases1 = args[2]
+        deaths1 = args[3]
+        recovered1 = args[4]
+
+        country2 = args[5]
+        cases_dates2 = args[6]
+        cases2 = args[7]
+        deaths2 = args[8]
+        recovered2 = args[9]
+
+    def get(self, request, format=None, *args, **kwargs):
+          
+        data = {
+            "country1" : country1,
+            "cases_dates1": cases_dates1,
+            "cases1": cases1,
+            "deaths1": deaths1, 
+            "recovered1": recovered1,
+
+            "country2" : country2,
+            "cases_dates2": cases_dates2,
+            "cases2": cases2,
+            "deaths2": deaths2, 
+            "recovered2": recovered2,
+        }
+        return Response(data)
 
 
-def countryWithoutChart(request, country):
+class compareCountriesView(View):
 
-#---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+    def get(self, *args, **kwargs):
 
-    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data(country)
+        country1 = 'Afghanistan'
+        country2 = 'Afghanistan'
 
-    context = {'country': country, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
-             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
+        url = "https://pomber.github.io/covid19/timeseries.json"
+            
+        response = requests.request("GET", url)
+        dict_data = json.loads(response.text)
 
-    return render(request, "country_without_chart.html", context)
 
+        #---------------GET COUNTRY CONTENTS FROM COUNTRY API--------------------
+
+        country_total_cases1, country_total_deaths1, country_total_recovered1, country_total_critical1 = get_specific_country_data(country1)
+        country_total_cases2, country_total_deaths2, country_total_recovered2, country_total_critical2 = get_specific_country_data(country2)
+
+        #-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+        
+
+        country1, cases_dates1, cases1, deaths1, recovered1 = get_country_data(country1)
+
+        country2, cases_dates2, cases2, deaths2, recovered2 = get_country_data(country2)
+
+
+        compare_api_obj = ChartDataCompareCountry()
+        compare_api_obj.get_values(country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2)
+
+        #----------------------------------------------------------------------
+
+        context = {'dict_data':dict_data, 'country1': country1, 'country2': country2, 'plain_news_list': plain_news_list, 'country_total_cases1': country_total_cases1, 'country_total_deaths1': country_total_deaths1,
+                'country_total_recovered1': country_total_recovered1, 'country_total_critical1': country_total_critical1, 'country_total_cases2': country_total_cases2, 'country_total_deaths2': country_total_deaths2,
+                'country_total_recovered2': country_total_recovered2, 'country_total_critical2': country_total_critical2}
+
+        return render(self.request, "compare_countries.html", context)
+    
+    def post(self, *args, **kwargs):
+
+        url = "https://pomber.github.io/covid19/timeseries.json"
+            
+        response = requests.request("GET", url)
+        dict_data = json.loads(response.text)
+
+        form = ContactForm(self.request.POST or None)
+        # print(self.request.POST)
+
+        if form.is_valid():
+            country1 = form.cleaned_data.get('country1')
+            country2 = form.cleaned_data.get('country2')
+
+            #---------------GET COUNTRY CONTENTS FROM COUNTRY API--------------------
+
+            country_total_cases1, country_total_deaths1, country_total_recovered1, country_total_critical1 = get_specific_country_data(country1)
+            country_total_cases2, country_total_deaths2, country_total_recovered2, country_total_critical2 = get_specific_country_data(country2)
+
+            #-------------GET COUNTRY DATA FOR CHARTS--------------------------------
+        
+
+            country1, cases_dates1, cases1, deaths1, recovered1 = get_country_data(country1)
+            country2, cases_dates2, cases2, deaths2, recovered2 = get_country_data(country2)
+
+
+            compare_api_obj = ChartDataCompareCountry()
+            compare_api_obj.get_values(country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2)
+
+
+            context = {'dict_data':dict_data, 'country1': country1, 'country2': country2, 'plain_news_list': plain_news_list, 'country_total_cases1': country_total_cases1, 'country_total_deaths1': country_total_deaths1,
+                    'country_total_recovered1': country_total_recovered1, 'country_total_critical1': country_total_critical1, 'country_total_cases2': country_total_cases2, 'country_total_deaths2': country_total_deaths2,
+                    'country_total_recovered2': country_total_recovered2, 'country_total_critical2': country_total_critical2}
+
+            return render(self.request, "compare_countries.html", context)

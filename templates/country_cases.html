@@ -221,29 +221,35 @@ function setChart(){
                   <!-- <h4 class="card-title">Employees Stats</h4> -->
                   <p class="card-category">Get charts of {{ country }} country with COVID-19, including confirmed cases, deaths and recovered cases.</p>
                 </div>
-                <div class="card-body table-responsive">
-                    <div class="row">
-                        <div class='col-sm-6'>
-                              <h4 style="text-align: center;">Displays total confirmed cases</h4>
-                              <canvas id="myChart" width="400" height="300"></canvas>
-                        </div>
-                        <br>
-                        <div class='col-sm-6'>
-                          <h4 style="text-align: center;">Displays total deaths</h4>
-                          <canvas id="myChart2" width="400" height="300"></canvas>
-                        </div>
+                {% if chart_available %}
+                <div class="card-body">
+                  <div class="row">
+                      <div class='col-sm-6'>
+                            <h4 style="text-align: center;">Displays total confirmed cases</h4>
+                            <canvas id="myChart" width="400" height="300"></canvas>
                       </div>
                       <br>
-                      <div class="row">
-                        <div class='col-sm-6'>
-                          <h4 style="text-align: center;">Displays total recovered</h4>
-                          <canvas id="myChart3" width="400" height="300"></canvas>
-                        </div>
-                        <!-- <div class='col-sm-6'>
-                          <canvas id="myChart2" width="400" height="300"></canvas>
-                        </div> -->
+                      <div class='col-sm-6'>
+                        <h4 style="text-align: center;">Displays total deaths</h4>
+                        <canvas id="myChart2" width="400" height="300"></canvas>
                       </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class='col-sm-6'>
+                        <h4 style="text-align: center;">Displays total recovered</h4>
+                        <canvas id="myChart3" width="400" height="300"></canvas>
+                      </div>
+                      <!-- <div class='col-sm-6'>
+                        <canvas id="myChart2" width="400" height="300"></canvas>
+                      </div> -->
+                    </div>
                 </div>
+                {% else %}
+                <div class="card-body">
+                  <h4>Charts are not available for this country.</h4>
+                </div>
+                {% endif %}
               </div>
             </div>
           </div>

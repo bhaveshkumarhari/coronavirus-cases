@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from core import views
-from core.views import ChartData, ChartDataCountry
+from core.views import ChartData, ChartDataCountry, ChartDataCompareCountry, compareCountriesView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,6 +17,7 @@ urlpatterns = [
     path('country/<str:country>/', views.countryView, name="country"),
     path('api/chart/data/country/<str:country>/', ChartDataCountry.as_view()),
 
-    path('country/data/<str:country>/', views.countryWithoutChart, name="country-without-chart"),
+    path('compare-countries/', compareCountriesView.as_view(), name="compare-countries"),
+    path('api/chart/data/country/<str:country1>/<str:country2>/', ChartDataCompareCountry.as_view()),
 
 ]
