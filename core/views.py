@@ -62,6 +62,35 @@ response = requests.request("GET", url)
 world_data_json = json.loads(response.text)
 
 
+#-----------------Total Live Data of the world----------------
+
+url = "https://corona.lmao.ninja/v2/all"
+    
+response = requests.request("GET", url)
+
+total_data_json = json.loads(response.text)
+
+#--------------FOR GLOBAL TRACKER AND BAR CHART--------------
+
+now_confirmed_cases = total_data_json['cases']
+now_total_deaths = total_data_json['deaths']
+now_total_recovered = total_data_json['recovered']
+now_total_critical = total_data_json['critical']
+
+now_todayCases = total_data_json['todayCases']
+now_todayDeaths = total_data_json['todayDeaths']
+now_total_active = total_data_json['active']
+now_total_tests = total_data_json['tests']
+
+global_bar_chart = []
+
+global_bar_chart.append(now_confirmed_cases)
+global_bar_chart.append(now_total_deaths)
+global_bar_chart.append(now_total_recovered)
+global_bar_chart.append(now_total_critical)
+global_bar_chart.append(now_total_active)
+
+
 def cases(request):
 
 #-----------------New List of dictionaries--------------------
@@ -88,25 +117,6 @@ def cases(request):
 
     converted_now_to_list = sorted_now_df.T.to_dict().values()
 
-#-----------------Total Live Data of the world----------------
-
-    url = "https://corona.lmao.ninja/v2/all"
-        
-    response = requests.request("GET", url)
-
-    total_data_json = json.loads(response.text)
-
-    # print(total_data_json)
-
-    cases = total_data_json['cases']
-    deaths = total_data_json['deaths']
-    recovered = total_data_json['recovered']
-    critical = total_data_json['critical']
-
-    todayCases = total_data_json['todayCases']
-    todayDeaths = total_data_json['todayDeaths']
-    active = total_data_json['active']
-    tests = total_data_json['tests']
 
     #------------------Yesterday's Data---------------------------
 
@@ -189,9 +199,9 @@ def cases(request):
             if key == "tests":
                 total_tests += value
 
-    context = {'country': converted_now_to_list, 'plain_news_list': plain_news_list, 'cases': cases,
-                'deaths': deaths, 'recovered': recovered, 'critical': critical,
-                'todayCases': todayCases, 'todayDeaths': todayDeaths, 'active': active, 'tests': tests,
+    context = {'country': converted_now_to_list, 'plain_news_list': plain_news_list, 'cases': now_confirmed_cases,
+                'deaths': now_total_deaths, 'recovered': now_total_recovered, 'critical': now_total_critical,
+                'todayCases': now_todayCases, 'todayDeaths': now_todayDeaths, 'active': now_total_active, 'tests': now_total_tests,
                 'yesterday_data':yesterday_converted_to_list, 'total_cases':total_cases, 'total_todayCases':total_todayCases, 
                 'total_deaths':total_deaths, 'total_todayDeaths':total_todayDeaths, 'total_recovered':total_recovered, 'total_active':total_active, 
                 'total_critical':total_critical, 'total_tests':total_tests}
@@ -244,7 +254,7 @@ def united_kingdom_cases(request):
     country, cases_dates, cases, deaths, recovered = get_country_data("United Kingdom")
 
     api_obj = ChartDataCountry()
-    api_obj.get_values(country, cases_dates, cases, deaths, recovered)
+    api_obj.get_values(country, cases_dates, cases, deaths, recovered, country_total_cases, country_total_deaths, country_total_recovered)
 
 #---------------------------------------------------------------------------
 
@@ -260,6 +270,8 @@ def usa_cases(request):
     response = requests.request("GET", url)
 
     states_data_json = json.loads(response.text)
+
+    print(states_data_json)
 
 #---------------GET USA CONTENTS FROM COUNTRY API--------------------
 
@@ -324,8 +336,11 @@ class ChartData(APIView):
             recovered_date.append(key)
             recovered.append(value)
 
+        labels = ['Confirmed cases', 'Deaths', 'Recovered', 'Critical', 'Active']
+
         # labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange']
         # default_items = [234, 134, 133, 32, 34, 5]
+
 
         data = {
             "cases_date": cases_date,
@@ -334,6 +349,9 @@ class ChartData(APIView):
             "deaths": deaths,
             "recovered_date": recovered_date,
             "recovered": recovered,
+
+            "global_bar_chart": global_bar_chart,
+            "labels": labels,
             
         }
         return Response(data)
@@ -369,12 +387,22 @@ class ChartDataCountry(APIView):
     permission_classes = []
 
     def get_values(self, *args, **kwargs):
-        global country, cases_dates, cases, deaths, recovered
+        global labels, bar_chart_data, country, cases_dates, cases, deaths, recovered, country_total_cases, country_total_deaths, country_total_recovered
         country = args[0]
         cases_dates = args[1]
         cases = args[2]
         deaths = args[3]
         recovered = args[4]
+
+        labels = ["Confirmed Cases", "Deaths", "Recovered"]
+        bar_chart_data = []
+        country_total_cases = args[5]
+        country_total_deaths = args[6]
+        country_total_recovered = args[7]
+
+        bar_chart_data.append(int(country_total_cases.replace(' ','')))
+        bar_chart_data.append(int(country_total_deaths.replace(' ','')))
+        bar_chart_data.append(int(country_total_recovered.replace(' ','')))
 
     def get(self, request, format=None, *args, **kwargs):
           
@@ -384,6 +412,9 @@ class ChartDataCountry(APIView):
             "cases": cases,
             "deaths": deaths, 
             "recovered": recovered,
+
+            "labels": labels,
+            "bar_chart_data": bar_chart_data, 
         }
         return Response(data)
 
@@ -419,11 +450,7 @@ def countryView(request, country):
         chart_available = False
 
     api_obj = ChartDataCountry()
-    api_obj.get_values(country, cases_dates, cases, deaths, recovered)
-
-#-------------GET COUNTRY DATA FOR BAR CHARTS--------------------------------
-
-
+    api_obj.get_values(country, cases_dates, cases, deaths, recovered, country_total_cases, country_total_deaths, country_total_recovered)
 
 #-----------------------------------------------------------------
 
@@ -440,6 +467,7 @@ class ChartDataCompareCountry(APIView):
 
     def get_values(self, *args, **kwargs):
         global country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2
+        global labels, country_bar_chart1, country_bar_chart2
         
         country1 = args[0]
         cases_dates1 = args[1]
@@ -452,6 +480,31 @@ class ChartDataCompareCountry(APIView):
         cases2 = args[7]
         deaths2 = args[8]
         recovered2 = args[9]
+
+
+        country_total_cases1 = args[10]
+        country_total_deaths1 = args[11]
+        country_total_recovered1 = args[12]
+        country_total_critical1 = args[13]
+
+        country_bar_chart1 = []
+        country_bar_chart1.append(country_total_cases1)
+        country_bar_chart1.append(country_total_deaths1)
+        country_bar_chart1.append(country_total_recovered1)
+        country_bar_chart1.append(country_total_critical1)
+
+        country_total_cases2 = args[14]
+        country_total_deaths2 = args[15]
+        country_total_recovered2 = args[16]
+        country_total_critical2 = args[17]
+
+        country_bar_chart2 = []
+        country_bar_chart2.append(country_total_cases2)
+        country_bar_chart2.append(country_total_deaths2)
+        country_bar_chart2.append(country_total_recovered2)
+        country_bar_chart2.append(country_total_critical2)
+
+        labels = ["Confirmed Cases", "Deaths", "Recovered", "Critical"]
 
     def get(self, request, format=None, *args, **kwargs):
           
@@ -467,6 +520,10 @@ class ChartDataCompareCountry(APIView):
             "cases2": cases2,
             "deaths2": deaths2, 
             "recovered2": recovered2,
+
+            "labels": labels,
+            "country_bar_chart1": country_bar_chart1, 
+            "country_bar_chart2": country_bar_chart2,
         }
         return Response(data)
 
@@ -498,7 +555,8 @@ class compareCountriesView(View):
 
 
         compare_api_obj = ChartDataCompareCountry()
-        compare_api_obj.get_values(country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2)
+        compare_api_obj.get_values(country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2,
+                                country_total_cases1, country_total_deaths1, country_total_recovered1, country_total_critical1, country_total_cases2, country_total_deaths2, country_total_recovered2, country_total_critical2)
 
         #----------------------------------------------------------------------
 
@@ -516,26 +574,45 @@ class compareCountriesView(View):
         dict_data = json.loads(response.text)
 
         form = ContactForm(self.request.POST or None)
-        # print(self.request.POST)
+        print(self.request.POST)
 
         if form.is_valid():
             country1 = form.cleaned_data.get('country1')
             country2 = form.cleaned_data.get('country2')
 
+            country1_bar = country1
+            country2_bar = country2
+
+            if country1_bar == "United Kingdom":
+                country1_bar = "UK"
+
+            if country1_bar == "US":
+                country1_bar = "USA"
+
+            if country2_bar == "United Kingdom":
+                country2_bar = "UK"
+
+            if country2_bar == "US":
+                country2_bar = "USA"
+
+            country1_chart = country1
+            country2_chart = country2
+
             #---------------GET COUNTRY CONTENTS FROM COUNTRY API--------------------
 
-            country_total_cases1, country_total_deaths1, country_total_recovered1, country_total_critical1 = get_specific_country_data(country1)
-            country_total_cases2, country_total_deaths2, country_total_recovered2, country_total_critical2 = get_specific_country_data(country2)
+            country_total_cases1, country_total_deaths1, country_total_recovered1, country_total_critical1 = get_specific_country_data(country1_bar)
+            country_total_cases2, country_total_deaths2, country_total_recovered2, country_total_critical2 = get_specific_country_data(country2_bar)
 
             #-------------GET COUNTRY DATA FOR CHARTS--------------------------------
         
 
-            country1, cases_dates1, cases1, deaths1, recovered1 = get_country_data(country1)
-            country2, cases_dates2, cases2, deaths2, recovered2 = get_country_data(country2)
+            country1, cases_dates1, cases1, deaths1, recovered1 = get_country_data(country1_chart)
+            country2, cases_dates2, cases2, deaths2, recovered2 = get_country_data(country2_chart)
 
 
             compare_api_obj = ChartDataCompareCountry()
-            compare_api_obj.get_values(country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2)
+            compare_api_obj.get_values(country1, cases_dates1, cases1, deaths1, recovered1, country2, cases_dates2, cases2, deaths2, recovered2,
+                                country_total_cases1, country_total_deaths1, country_total_recovered1, country_total_critical1, country_total_cases2, country_total_deaths2, country_total_recovered2, country_total_critical2)
 
 
             context = {'dict_data':dict_data, 'country1': country1, 'country2': country2, 'plain_news_list': plain_news_list, 'country_total_cases1': country_total_cases1, 'country_total_deaths1': country_total_deaths1,

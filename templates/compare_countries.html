@@ -18,6 +18,10 @@ var cases_date2 = []
 var deaths2 = []
 var recovered2 = []
 
+var labels = []
+var country_bar_chart1 = []
+var country_bar_chart2 = []
+
 
 $.ajax({
     method: "GET",
@@ -34,6 +38,10 @@ $.ajax({
         confirmed_cases2 = data.cases2
         deaths2 = data.deaths2
         recovered2 = data.recovered2
+
+        labels = data.labels
+        country_bar_chart1 = data.country_bar_chart1
+        country_bar_chart2 = data.country_bar_chart2
         setChart()
     },
     error: function(error_data){
@@ -46,7 +54,8 @@ function setChart(){
 
     var ctx = document.getElementById('myChart').getContext('2d');
     var ctx2 = document.getElementById('myChart2').getContext('2d');
-
+    var ctx3 = document.getElementById('myChart3').getContext('2d');
+    var ctx4 = document.getElementById('myChart4').getContext('2d');
 
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -141,6 +150,72 @@ function setChart(){
             }
         }
     });
+
+    var myChart = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '',
+                data: country_bar_chart1,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    var myChart = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '',
+                data: country_bar_chart2,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
 }
 
 {% endblock %}
@@ -157,17 +232,19 @@ function setChart(){
                   <!-- <h4 class="card-title">Employees Stats</h4> -->
                   <form class="form-inline" method="POST">
                     {% csrf_token %}
-                    <label for="country">First country: </label>
-                    <select name="country1" id="country">
+                    <!-- <label for="country">First country: </label> -->
+                    <select class="form-control" name="country1" id="country">
                     {% for key, value in dict_data.items %}
-                    <option value="{{key}}">{{key}}</option>
+                    <option value="" disabled selected hidden>Choose country</option>
+                    <option style="color: white; background-color: #30073b;" value="{{key}}">{{key}}</option>
                     {% endfor %}
                     </select>
 
-                    <label for="country">Second country: </label>
-                    <select name="country2" id="country">
+                    <!-- <label for="country">Second country: </label> -->
+                    <select class="form-control" name="country2" id="country">
                     {% for key, value in dict_data.items %}
-                    <option value="{{key}}">{{key}}</option>
+                    <option value="" disabled selected hidden>Choose country</option>
+                    <option style="color: white; background-color: #30073b;" value="{{key}}">{{key}}</option>
                     {% endfor %}
                     </select>
                     <input type="submit" class="btn btn-primary" value="Compare">
@@ -177,17 +254,173 @@ function setChart(){
                 </div>
                
                 <div class="card-body">
+                    <br>
+                    <!-- <div class="row">
+
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                          <div class="card card-stats">
+                            <div class="card-header card-header-info card-header-icon">
+                              <div class="card-icon">
+                                <i class="fa fa-file-text" aria-hidden="true"></i>
+                              </div>
+                              <p class="card-category">Total Cases</p>
+                              <h3 class="card-title" style="color: white;">{{ country_total_cases1|intcomma }}
+                
+                              </h3>
+                            </div>
+                            <div class="card-footer">
+                              <div class="stats">
+             
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                          <div class="card card-stats">
+                            <div class="card-header card-header-danger card-header-icon">
+                              <div class="card-icon">
+                                <i class="fa fa-heart" aria-hidden="true"></i>
+                              </div>
+                              <p class="card-category">Total Deaths</p>
+                              <h3 class="card-title" style="color: #da3a36;">{{ country_total_deaths1|intcomma }}</h3>
+                            </div>
+                            <div class="card-footer">
+                              <div class="stats">
+               
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                              <div class="card-header card-header-info card-header-icon">
+                                <div class="card-icon">
+                                  <i class="fa fa-file-text" aria-hidden="true"></i>
+                                </div>
+                                <p class="card-category">Total Cases</p>
+                                <h3 class="card-title" style="color: white;">{{ country_total_cases2|intcomma }}
+       
+                                </h3>
+                              </div>
+                              <div class="card-footer">
+                                <div class="stats">
+
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                              <div class="card-header card-header-danger card-header-icon">
+                                <div class="card-icon">
+                                  <i class="fa fa-heart" aria-hidden="true"></i>
+                                </div>
+                                <p class="card-category">Total Deaths</p>
+                                <h3 class="card-title" style="color: #da3a36;">{{ country_total_deaths2|intcomma }}</h3>
+                              </div>
+                              <div class="card-footer">
+                                <div class="stats">
+     
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        
+                      </div>
+                      <div class="row">
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                              <div class="card-header card-header-success card-header-icon">
+                                <div class="card-icon">
+                                  <i class="fa fa-medkit" aria-hidden="true"></i>
+                                </div>
+                                <p class="card-category">Recovered</p>
+                                <h3 class="card-title" style="color: #52af49;">{{ country_total_recovered1|intcomma }}</h3>
+                              </div>
+                              <div class="card-footer">
+                                <div class="stats">
+                         
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                              <div class="card-header card-header-warning card-header-icon">
+                                <div class="card-icon">
+                                  <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                                </div>
+                                <p class="card-category">Critical</p>
+                                <h3 class="card-title" style="color: white;">{{ country_total_critical1|intcomma }}</h3>
+                              </div>
+                              <div class="card-footer">
+                                <div class="stats">
+     
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                          <div class="card card-stats">
+                            <div class="card-header card-header-success card-header-icon">
+                              <div class="card-icon">
+                                <i class="fa fa-medkit" aria-hidden="true"></i>
+                              </div>
+                              <p class="card-category">Recovered</p>
+                              <h3 class="card-title" style="color: #52af49;">{{ country_total_recovered2|intcomma }}</h3>
+                            </div>
+                            <div class="card-footer">
+                              <div class="stats">
+    
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                          <div class="card card-stats">
+                            <div class="card-header card-header-warning card-header-icon">
+                              <div class="card-icon">
+                                <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                              </div>
+                              <p class="card-category">Critical</p>
+                              <h3 class="card-title" style="color: white;">{{ country_total_critical2|intcomma }}</h3>
+                            </div>
+                            <div class="card-footer">
+                              <div class="stats">
+     
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                      </div> -->
+
                   <div class="row">
                       <div class='col-sm-6'>
-                            <h4 style="text-align: center;">Current state in {{ country1 }}</h4>
+                            <h4 style="text-align: center;">Timeframe of {{ country1 }}</h4>
                             <canvas id="myChart" width="400" height="300"></canvas>
                       </div>
                       <br>
                       <div class='col-sm-6'>
-                        <h4 style="text-align: center;">Current state in {{ country2 }}</h4>
+                        <h4 style="text-align: center;">Timeframe of {{ country2 }}</h4>
                         <canvas id="myChart2" width="400" height="300"></canvas>
                       </div>
                     </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class='col-sm-6'>
+                              <h4 style="text-align: center;">Current state in {{ country1 }}</h4>
+                              <canvas id="myChart3" width="400" height="300"></canvas>
+                        </div>
+                        <br>
+                        <div class='col-sm-6'>
+                          <h4 style="text-align: center;">Current state in {{ country2 }}</h4>
+                          <canvas id="myChart4" width="400" height="300"></canvas>
+                        </div>
+                      </div>
                     <br>
 
                 </div>

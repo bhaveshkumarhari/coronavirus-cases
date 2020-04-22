@@ -108,6 +108,8 @@
                               </th>
                               <th>Active Cases
                               </th>
+                              <th>Tests
+                              </th>
                             </tr>
                           </thead>
 
@@ -149,6 +151,13 @@
                                         {% endif %}
                                       {% endif %}
                                       {% if key == 'active' %}
+                                        {% if value == 0 %}
+                                            <td></td>
+                                        {% else %}
+                                            <td>{{ value|intcomma }}</td>
+                                        {% endif %}
+                                      {% endif %}
+                                      {% if key == 'tests' %}
                                         {% if value == 0 %}
                                             <td></td>
                                         {% else %}

@@ -19,6 +19,8 @@
   var deaths = []
   var recovered = []
   
+  var labels = []
+  var bar_chart_data = []
   
   $.ajax({
       method: "GET",
@@ -29,6 +31,9 @@
           confirmed_cases = data.cases
           deaths = data.deaths
           recovered = data.recovered
+
+          labels = data.labels
+          bar_chart_data = data.bar_chart_data
           setChart()
       },
       error: function(error_data){
@@ -42,6 +47,7 @@
       var ctx = document.getElementById('myChart').getContext('2d');
       var ctx2 = document.getElementById('myChart2').getContext('2d');
       var ctx3 = document.getElementById('myChart3').getContext('2d');
+      var ctx4 = document.getElementById('myChart4').getContext('2d');
   
       var myChart = new Chart(ctx, {
           type: 'line',
@@ -134,6 +140,37 @@
               }
           }
       });
+
+      var myChart = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '',
+                data: bar_chart_data,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
   }
   
   {% endblock %}
@@ -310,9 +347,10 @@
                           <h4 style="text-align: center;">Displays total recovered</h4>
                           <canvas id="myChart3" width="400" height="300"></canvas>
                         </div>
-                        <!-- <div class='col-sm-6'>
-                          <canvas id="myChart2" width="400" height="300"></canvas>
-                        </div> -->
+                        <div class='col-sm-6'>
+                          <h4 style="text-align: center;">Current state in {{ country }}</h4>
+                          <canvas id="myChart4" width="400" height="300"></canvas>
+                        </div>
                       </div>
 
                     </div>

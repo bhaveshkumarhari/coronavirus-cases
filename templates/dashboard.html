@@ -16,6 +16,9 @@ var deaths_date = []
 var recovered = []
 var recovered_date = []
 
+var global_bar_chart = []
+var labels = []
+
 $.ajax({
     method: "GET",
     url: endpoint,
@@ -26,6 +29,9 @@ $.ajax({
         deaths = data.deaths
         recovered_date = data.recovered_date
         recovered = data.recovered
+
+        global_bar_chart = data.global_bar_chart
+        labels = data.labels
         setChart()
     },
     error: function(error_data){
@@ -38,6 +44,7 @@ function setChart(){
     var ctx = document.getElementById('myChart').getContext('2d');
     var ctx2 = document.getElementById('myChart2').getContext('2d');
     var ctx3 = document.getElementById('myChart3').getContext('2d');
+    var ctx4 = document.getElementById('myChart4').getContext('2d');
 
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -116,6 +123,41 @@ function setChart(){
                 ],
                 borderColor: [
                     'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    var myChart = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '',
+                data: global_bar_chart,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                    
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(153, 102, 255, 1)'
                 ],
                 borderWidth: 2
             }]
@@ -567,26 +609,28 @@ function setChart(){
                           <div class="ripple-container"></div>
                         </button>
                       </div> -->
+                      <br>
                       <div class="row">
+                        <div class='col-sm-6'>
+                          <h4 style="text-align: center;">Current state in the world</h4>
+                          <canvas id="myChart4" width="400" height="300"></canvas>
+                        </div>
                         <div class='col-sm-6'>
                               <h4 style="text-align: center;">Displays total confirmed cases</h4>
                               <canvas id="myChart" width="400" height="300"></canvas>
                         </div>
-                        <br>
+                      </div>
+                      <br>
+                      <br>
+                      <div class="row">
                         <div class='col-sm-6'>
                           <h4 style="text-align: center;">Displays total deaths</h4>
                           <canvas id="myChart2" width="400" height="300"></canvas>
                         </div>
-                      </div>
-                      <br>
-                      <div class="row">
                         <div class='col-sm-6'>
                           <h4 style="text-align: center;">Displays total recovered</h4>
                           <canvas id="myChart3" width="400" height="300"></canvas>
                         </div>
-                        <!-- <div class='col-sm-6'>
-                          <canvas id="myChart2" width="400" height="300"></canvas>
-                        </div> -->
                       </div>
 
                     </div>
