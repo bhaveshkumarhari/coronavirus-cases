@@ -91,6 +91,28 @@ global_bar_chart.append(now_total_critical)
 global_bar_chart.append(now_total_active)
 
 
+def get_flag(country):
+
+    url = "https://corona.lmao.ninja/v2/countries"
+        
+    response = requests.request("GET", url)
+
+    world_data_json = json.loads(response.text)
+
+    new_list = []
+    for dict_item in world_data_json:
+        new_dict = {}
+        new_dict['flag'] = dict_item['countryInfo']['flag']
+        new_dict['country'] = dict_item['country']
+
+        new_list.append(new_dict)
+
+    for dictl in new_list:
+        if dictl['country'] == country:
+            return dictl['flag']
+
+
+
 def cases(request):
 
 #-----------------New List of dictionaries--------------------
@@ -270,8 +292,6 @@ def usa_cases(request):
     response = requests.request("GET", url)
 
     states_data_json = json.loads(response.text)
-
-    print(states_data_json)
 
 #---------------GET USA CONTENTS FROM COUNTRY API--------------------
 
@@ -540,6 +560,9 @@ class compareCountriesView(View):
         response = requests.request("GET", url)
         dict_data = json.loads(response.text)
 
+        #------------GET FLAG---------------------------
+        country1_flag = get_flag(country1)
+        country2_flag = get_flag(country2)
 
         #---------------GET COUNTRY CONTENTS FROM COUNTRY API--------------------
 
@@ -560,7 +583,7 @@ class compareCountriesView(View):
 
         #----------------------------------------------------------------------
 
-        context = {'dict_data':dict_data, 'country1': country1, 'country2': country2, 'plain_news_list': plain_news_list, 'country_total_cases1': country_total_cases1, 'country_total_deaths1': country_total_deaths1,
+        context = {'dict_data':dict_data, 'country1': country1, 'country2': country2, 'country1_flag': country1_flag, 'country2_flag': country2_flag, 'plain_news_list': plain_news_list, 'country_total_cases1': country_total_cases1, 'country_total_deaths1': country_total_deaths1,
                 'country_total_recovered1': country_total_recovered1, 'country_total_critical1': country_total_critical1, 'country_total_cases2': country_total_cases2, 'country_total_deaths2': country_total_deaths2,
                 'country_total_recovered2': country_total_recovered2, 'country_total_critical2': country_total_critical2}
 
@@ -574,7 +597,7 @@ class compareCountriesView(View):
         dict_data = json.loads(response.text)
 
         form = ContactForm(self.request.POST or None)
-        print(self.request.POST)
+        # print(self.request.POST)
 
         if form.is_valid():
             country1 = form.cleaned_data.get('country1')
@@ -594,6 +617,10 @@ class compareCountriesView(View):
 
             if country2_bar == "US":
                 country2_bar = "USA"
+
+            #------------GET FLAG--------------------
+            country1_flag = get_flag(country1_bar)
+            country2_flag = get_flag(country2_bar)
 
             country1_chart = country1
             country2_chart = country2
@@ -615,7 +642,7 @@ class compareCountriesView(View):
                                 country_total_cases1, country_total_deaths1, country_total_recovered1, country_total_critical1, country_total_cases2, country_total_deaths2, country_total_recovered2, country_total_critical2)
 
 
-            context = {'dict_data':dict_data, 'country1': country1, 'country2': country2, 'plain_news_list': plain_news_list, 'country_total_cases1': country_total_cases1, 'country_total_deaths1': country_total_deaths1,
+            context = {'dict_data':dict_data, 'country1': country1, 'country2': country2, 'country1_flag': country1_flag, 'country2_flag': country2_flag, 'plain_news_list': plain_news_list, 'country_total_cases1': country_total_cases1, 'country_total_deaths1': country_total_deaths1,
                     'country_total_recovered1': country_total_recovered1, 'country_total_critical1': country_total_critical1, 'country_total_cases2': country_total_cases2, 'country_total_deaths2': country_total_deaths2,
                     'country_total_recovered2': country_total_recovered2, 'country_total_critical2': country_total_critical2}
 
