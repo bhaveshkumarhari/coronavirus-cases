@@ -53,6 +53,9 @@ for item in some_news_list:
     removed_source = item.replace('[source]','')
     plain_news_list.append(removed_source)
 
+# Remove empty string from list
+plain_news_list = [i for i in plain_news_list if i] 
+
 #-------------Live Data of all countries----------------------
 
 url = "https://corona.lmao.ninja/v2/countries"
@@ -450,8 +453,6 @@ def get_specific_country_data(country):
 def countryView(request, country):
 
     country_flag = get_flag(country)
-
-    print(country_flag)
 
     country_bar = country
     country_line = country
