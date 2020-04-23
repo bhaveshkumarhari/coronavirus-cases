@@ -232,14 +232,6 @@ def cases(request):
 
 def united_kingdom_cases(request):
     
-#------------------UK Flag----------------------------------------
-
-    for dict_item in world_data_json:
-        new_dict = {}
-        if dict_item['country'] == 'UK':
-            new_dict['flag'] = dict_item['countryInfo']['flag']
-            uk_flag = new_dict.get('flag')
-
 #------------------UK data from world cases API-------------------------------
 
     country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('UK')
@@ -457,17 +449,26 @@ def get_specific_country_data(country):
 
 def countryView(request, country):
 
+    country_bar = country
+    country_line = country
+
+    if country_line == "UK":
+        country_line = "United Kingdom"
+
+    if country_line == "USA":
+        country_line = "US"
+
 #---------------GET COUNTRY CONTENTS FROM COUNTRY API--------------------
 
-    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data(country)
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data(country_bar)
 
 #-------------GET COUNTRY DATA FOR LINE CHARTS--------------------------------
 
-    country, cases_dates, cases, deaths, recovered = get_country_data(country)
+    country, cases_dates, cases, deaths, recovered = get_country_data(country_line)
 
     chart_available = True
-    if cases_dates == []:
-        chart_available = False
+    # if cases_dates == []:
+    #     chart_available = False
 
     api_obj = ChartDataCountry()
     api_obj.get_values(country, cases_dates, cases, deaths, recovered, country_total_cases, country_total_deaths, country_total_recovered)

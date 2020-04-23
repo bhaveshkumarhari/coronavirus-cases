@@ -370,9 +370,7 @@ function setChart(){
                                         {% endif %}
 
                                         {% if key == 'country' %}
-                                            {% if value == 'UK' %}
-                                                <td><b><u><a href="{% url 'united-kingdom-cases' %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'USA' %}
+                                            {% if value == 'USA' %}
                                                 <td><b><u><a href="{% url 'usa-cases' %}">{{ value }}</a></u></b></td>
                                             {% else %}
                                                 <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>

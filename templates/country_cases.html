@@ -257,8 +257,30 @@ function setChart(){
             <div class="col-lg-12 col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
+                  {% if country == "US" %}
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <ul class="nav nav-tabs" data-tabs="tabs">
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'usa-cases' %}">
+                            States
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+
+                        <li class="nav-item">
+                          <a class="nav-link active" href="{% url 'country' country='USA' %}">
+                            Charts
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  {% else %}
                   <!-- <h4 class="card-title">Employees Stats</h4> -->
                   <p class="card-category">Get charts of {{ country }} country with COVID-19, including confirmed cases, deaths and recovered cases.</p>
+                  {% endif %}
                 </div>
                 {% if chart_available %}
                 <div class="card-body">
