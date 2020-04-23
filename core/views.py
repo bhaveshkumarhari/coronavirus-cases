@@ -449,6 +449,10 @@ def get_specific_country_data(country):
 
 def countryView(request, country):
 
+    country_flag = get_flag(country)
+
+    print(country_flag)
+
     country_bar = country
     country_line = country
 
@@ -467,15 +471,15 @@ def countryView(request, country):
     country, cases_dates, cases, deaths, recovered = get_country_data(country_line)
 
     chart_available = True
-    # if cases_dates == []:
-    #     chart_available = False
+    if cases_dates == []:
+        chart_available = False
 
     api_obj = ChartDataCountry()
     api_obj.get_values(country, cases_dates, cases, deaths, recovered, country_total_cases, country_total_deaths, country_total_recovered)
 
 #-----------------------------------------------------------------
 
-    context = {'chart_available': chart_available, 'country': country, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+    context = {'country_flag':country_flag, 'chart_available': chart_available, 'country': country, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
              'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "country_cases.html", context)
