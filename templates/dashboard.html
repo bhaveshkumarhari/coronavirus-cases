@@ -2,6 +2,11 @@
 {% load static %}
 {% load humanize %}
 
+{% block head %}
+{{block.super}}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
 <script>
 {% block jquery %}
 
@@ -180,6 +185,7 @@ function setChart(){
 {% block content %}
       <div class="content">
         <div class="container-fluid">
+          
           <div class="row">
 
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
@@ -251,6 +257,7 @@ function setChart(){
             </div>
             
           </div>
+          
 
           <!-- <div class="row">
             <div class='col-md-12'>
@@ -288,9 +295,16 @@ function setChart(){
                             <div class="ripple-container"></div>
                           </a>
                         </li>
+                        
                         <li class="nav-item">
                           <a class="nav-link" href="{% url 'compare-countries' %}">
                             Compare
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'worldmap' %}">
+                            Worldmap
                             <div class="ripple-container"></div>
                           </a>
                         </li>
@@ -311,7 +325,7 @@ function setChart(){
                       </div>
                     </br>
                         <table id="myTableToday" class="table table-hover tablesorter" cellspacing="0" width="100%">
-                            <thead>
+                            <thead class="header" id="myHeader">
                               <tr>
                                 <th>
                                 </th>
@@ -600,7 +614,14 @@ function setChart(){
                           </table>
                     </div>
 
-                    <div class="tab-pane active" id="chart">
+                    <div class="tab-pane" id="map">
+                      
+                      <!-- {# <div id="plot_container" class="col-md-12 col-md-offset-2">{{plot|safe}}</div>#} -->
+                      <div class="col-md-12">{{plot|safe}}</div>
+                      
+                    </div>
+
+                    <div class="tab-pane" id="chart">
                       <!-- <div class="input-group no-border">
                         <button type="submit" class="btn btn-default btn-round btn-just-icon">
                           <i class="material-icons">search</i>
@@ -610,7 +631,7 @@ function setChart(){
                       <br>
                       <div class="row">
                         <div class='col-sm-6'>
-                          <h4 style="text-align: center;">Current state in the world</h4>
+                          <h4 style="text-align: center;">Current stats in the world</h4>
                           <canvas id="myChart4" width="400" height="300"></canvas>
                         </div>
                         <div class='col-sm-6'>
@@ -632,7 +653,6 @@ function setChart(){
                       </div>
 
                     </div>
-
                     
                   </div>
                 </div>

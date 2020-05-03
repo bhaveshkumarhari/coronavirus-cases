@@ -20,4 +20,6 @@ urlpatterns = [
     path('compare-countries/', compareCountriesView.as_view(), name="compare-countries"),
     path('api/chart/data/country/<str:country1>/<str:country2>/', ChartDataCompareCountry.as_view()),
 
+    path('worldmap/', views.worldmap, name='worldmap'),
+
 ]

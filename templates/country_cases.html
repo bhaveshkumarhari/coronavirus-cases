@@ -52,22 +52,11 @@ function setChart(){
             datasets: [{
                 label: 'Confirmed cases',
                 data: confirmed_cases,
-                // data: deaths,
                 backgroundColor: [
-                    // 'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
-                    // 'rgba(255, 206, 86, 0.2)',
-                    // 'rgba(75, 192, 192, 0.2)',
-                    // 'rgba(153, 102, 255, 0.2)',
-                    // 'rgba(255, 159, 64, 0.2)'
                 ],
                 borderColor: [
-                    // 'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
-                    // 'rgba(255, 206, 86, 1)',
-                    // 'rgba(75, 192, 192, 1)',
-                    // 'rgba(153, 102, 255, 1)',
-                    // 'rgba(255, 159, 64, 1)'
                 ],
                 borderWidth: 2
             }]
@@ -268,7 +257,7 @@ function setChart(){
                       <ul class="nav nav-tabs" data-tabs="tabs">
                         <li class="nav-item">
                           <a class="nav-link" href="{% url 'usa-cases' %}">
-                            States
+                            Table
                             <div class="ripple-container"></div>
                           </a>
                         </li>
@@ -279,19 +268,26 @@ function setChart(){
                             <div class="ripple-container"></div>
                           </a>
                         </li>
+
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'usa-cases' %}">
+                            Map
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </div>
                   {% else %}
                   <!-- <h4 class="card-title">Employees Stats</h4> -->
-                  <p class="card-category">Get charts of {{ country }} country with COVID-19, including confirmed cases, deaths and recovered cases.</p>
+                  <p class="card-category">Get charts of <img src="{{ country_flag }}" alt="Country Flag" height="15" width="25"> {{ country }} country with COVID-19, including confirmed cases, deaths and recovered cases.</p>
                   {% endif %}
                 </div>
                 {% if chart_available %}
                 <div class="card-body">
                   <div class="row">
                     <div class='col-sm-6'>
-                      <h4 style="text-align: center;">Current state in {{ country }}</h4>
+                      <h4 style="text-align: center;">Current stats in {{ country }}</h4>
                       <canvas id="myChart4" width="400" height="300"></canvas>
                     </div>
                       <div class='col-sm-6'>

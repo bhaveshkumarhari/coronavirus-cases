@@ -2,6 +2,11 @@
 {% load static %}
 {% load humanize %}
 
+{% block head %}
+{{block.super}}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
 {% block flag %}
 <h4 style="color: white;"><img src="https://corona.lmao.ninja/assets/img/flags/us.png" alt="Country Flag" height="20" width="30">  US </h4>
 {% endblock flag %}
@@ -79,122 +84,203 @@
             </div>
           </div>
 
-          <div class="input-group no-border">
-            <input type="text" id="myInput" onkeyup="myFunction()" value="" class="form-control" placeholder="Search...">
-            <!-- <button type="submit" class="btn btn-default btn-round btn-just-icon">
-              <i class="material-icons">search</i>
-              <div class="ripple-container"></div>
-            </button> -->
-          </div>
-
 
           <div class="row">
             <div class="col-lg-12 col-md-12">
               <div class="card">
-                <div class="card-header card-header-primary">
+                <div class="card-header card-header-tabs card-header-primary">
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <h4><img src="https://corona.lmao.ninja/assets/img/flags/us.png" alt="Country Flag" height="15" width="25"> US choropleth map and bar chart of current stats.</h4>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="row">
+                      <div class='col-sm-6'>
+                        <div class="col-md-12">{{plot|safe}}</div>
+                      </div>
+                      <div class='col-sm-6'>
+                        <h2>Bar chart goes here...</h2>
+                        
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-tabs card-header-primary">
                   <div class="nav-tabs-navigation">
                     <div class="nav-tabs-wrapper">
                       <ul class="nav nav-tabs" data-tabs="tabs">
                         <li class="nav-item">
-                          <a class="nav-link active" href="#table" data-toggle="tab">
-                            States
+                          <a class="nav-link active" href="#states" data-toggle="tab">
+                            Table
                             <div class="ripple-container"></div>
                           </a>
                         </li>
-
                         <li class="nav-item">
                           <a class="nav-link" href="{% url 'country' country='USA' %}">
                             Charts
                             <div class="ripple-container"></div>
                           </a>
                         </li>
+                        <!-- <li class="nav-item">
+                          <a class="nav-link" href="#map" data-toggle="tab">
+                            Map
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li> -->
+                    
                       </ul>
                     </div>
                   </div>
-                  <!-- <p class="card-category">Get stats on United States of America States with COVID-19, including cases, new cases, deaths, new deaths, and active cases.</p> -->
                 </div>
-                <div class="card-body table-responsive">
-                    <table id="myTable" class="table table-hover" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                              <th>State
-                              </th>
-                              <th>Total Cases
-                              </th>
-                              <th>New Cases
-                              </th>
-                              <th>Total Deaths
-                              </th>
-                              <th>New Deaths
-                              </th>
-                              <th>Active Cases
-                              </th>
-                              <th>Tests
-                              </th>
-                            </tr>
-                          </thead>
-
-
-
-                          {% for item in states %}
-                          <tbody>
-                              <tr>
-                                  {% for key, value in item.items %}
-                                      {% if key == 'state' %}
-                                      <td>{{ value|intcomma }}</td>
-                                      {% endif %}
-                                      {% if key == 'cases' %}
-                                        {% if value == 0 %}
-                                            <td></td>
-                                        {% else %}
-                                          <td>{{ value|intcomma }}</td>
-                                        {% endif %}
-                                      {% endif %}
-                                      {% if key == 'todayCases' %}
-                                        {% if value == 0 %}
-                                            <td></td>
-                                        {% else %}
-                                            <td style="color: #ff9800;">+{{ value|intcomma }}</td>
-                                        {% endif %}
-                                      {% endif %}
-                                      {% if key == 'deaths' %}
-                                        {% if value == 0 %}
-                                            <td></td>
-                                        {% else %}
-                                            <td>{{ value|intcomma }}</td>
-                                        {% endif %}
-                                      {% endif %}
-                                      {% if key == 'todayDeaths' %}
-                                        {% if value == 0 %}
-                                            <td></td>
-                                        {% else %}
-                                            <td style="color: #da3a36;">+{{ value|intcomma }}</td>
-                                        {% endif %}
-                                      {% endif %}
-                                      {% if key == 'active' %}
-                                        {% if value == 0 %}
-                                            <td></td>
-                                        {% else %}
-                                            <td>{{ value|intcomma }}</td>
-                                        {% endif %}
-                                      {% endif %}
-                                      {% if key == 'tests' %}
-                                        {% if value == 0 %}
-                                            <td></td>
-                                        {% else %}
-                                            <td>{{ value|intcomma }}</td>
-                                        {% endif %}
-                                      {% endif %}
-                                  {% endfor %}
-                              </tr>
-                          </tbody>
-                          {% endfor %}
+                
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane table-responsive active" id="states">
+                      <div class="input-group no-border">
+                        <input type="text" id="myInput" onkeyup="myFunction()" value="" class="form-control" placeholder="Search...">
+                        <!-- <button type="submit" class="btn btn-default btn-round btn-just-icon">
+                          <i class="material-icons">search</i>
+                          <div class="ripple-container"></div>
+                        </button> -->
+                      </div>
+                    </br>
                     
-                      </table> 
+                    <table id="myTable" class="table table-hover" cellspacing="0" width="100%">
+                      <thead>
+                          <tr>
+                            <th>State
+                            </th>
+                            <th>Total Cases
+                            </th>
+                            <th>New Cases
+                            </th>
+                            <th>Total Deaths
+                            </th>
+                            <th>New Deaths
+                            </th>
+                            <th>Active Cases
+                            </th>
+                            <th>Tests
+                            </th>
+                          </tr>
+                        </thead>
+
+
+
+                        {% for item in states %}
+                        <tbody>
+                            <tr>
+                                {% for key, value in item.items %}
+                                    {% if key == 'state' %}
+                                    <td>{{ value|intcomma }}</td>
+                                    {% endif %}
+                                    {% if key == 'cases' %}
+                                      {% if value == 0 %}
+                                          <td></td>
+                                      {% else %}
+                                        <td>{{ value|intcomma }}</td>
+                                      {% endif %}
+                                    {% endif %}
+                                    {% if key == 'todayCases' %}
+                                      {% if value == 0 %}
+                                          <td></td>
+                                      {% else %}
+                                          <td style="color: #ff9800;">+{{ value|intcomma }}</td>
+                                      {% endif %}
+                                    {% endif %}
+                                    {% if key == 'deaths' %}
+                                      {% if value == 0 %}
+                                          <td></td>
+                                      {% else %}
+                                          <td>{{ value|intcomma }}</td>
+                                      {% endif %}
+                                    {% endif %}
+                                    {% if key == 'todayDeaths' %}
+                                      {% if value == 0 %}
+                                          <td></td>
+                                      {% else %}
+                                          <td style="color: #da3a36;">+{{ value|intcomma }}</td>
+                                      {% endif %}
+                                    {% endif %}
+                                    {% if key == 'active' %}
+                                      {% if value == 0 %}
+                                          <td></td>
+                                      {% else %}
+                                          <td>{{ value|intcomma }}</td>
+                                      {% endif %}
+                                    {% endif %}
+                                    {% if key == 'tests' %}
+                                      {% if value == 0 %}
+                                          <td></td>
+                                      {% else %}
+                                          <td>{{ value|intcomma }}</td>
+                                      {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                  
+                    </table> 
+                    </div>
+                   
+                    <!-- <div class="tab-pane active" id="chart">
+                      <br>
+                      <div class="row">
+                        <div class='col-sm-6'>
+                          <h4 style="text-align: center;">Current state in the world</h4>
+                          <canvas id="myChart4" width="400" height="300"></canvas>
+                        </div>
+                        <div class='col-sm-6'>
+                              <h4 style="text-align: center;">Displays total confirmed cases</h4>
+                              <canvas id="myChart" width="400" height="300"></canvas>
+                        </div>
+                      </div>
+                      <br>
+                      <br>
+                      <div class="row">
+                        <div class='col-sm-6'>
+                          <h4 style="text-align: center;">Displays total deaths</h4>
+                          <canvas id="myChart2" width="400" height="300"></canvas>
+                        </div>
+                        <div class='col-sm-6'>
+                          <h4 style="text-align: center;">Displays total recovered</h4>
+                          <canvas id="myChart3" width="400" height="300"></canvas>
+                        </div>
+                      </div>
+
+                    </div> -->
+
+                    <!-- <div class="tab-pane" id="map">
+
+                          {# <div id="plot_container" class="col-md-8 col-md-offset-2">{{plot|safe}}</div>#}
+                          <div class="col-md-12">{{plot|safe}}</div>
+
+                    </div> -->
+
+                    
+                  </div>
                 </div>
               </div>
             </div>
+
+
           </div>
+
 
 
         </div>

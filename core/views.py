@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from django.http import JsonResponse
 
 from django.http import HttpResponseRedirect
@@ -20,6 +20,8 @@ from bs4 import BeautifulSoup
 import re
 import pandas
 import json
+
+from . import plots
 
 User = get_user_model()
 
@@ -45,7 +47,7 @@ news_list = first_div_row.splitlines()
 for item in news_list:
     news_list.remove('')
 
-news_list.remove('Latest Updates')
+news_list.remove('Latest News')
 some_news_list = news_list[:50]
 
 plain_news_list = []
@@ -54,7 +56,7 @@ for item in some_news_list:
     plain_news_list.append(removed_source)
 
 # Remove empty string from list
-plain_news_list = [i for i in plain_news_list if i] 
+plain_news_list = [i for i in plain_news_list if i]
 
 #-------------Live Data of all countries----------------------
 
@@ -223,8 +225,12 @@ def cases(request):
         for key, value in item.items():
             if key == "tests":
                 total_tests += value
+            
+    #--------FOR MAP PLOTS---------------------------
 
-    context = {'country': converted_now_to_list, 'plain_news_list': plain_news_list, 'cases': now_confirmed_cases,
+    plot = plots.plotworld()
+
+    context = {'plot': plot, 'country': converted_now_to_list, 'plain_news_list': plain_news_list, 'cases': now_confirmed_cases,
                 'deaths': now_total_deaths, 'recovered': now_total_recovered, 'critical': now_total_critical,
                 'todayCases': now_todayCases, 'todayDeaths': now_todayDeaths, 'active': now_total_active, 'tests': now_total_tests,
                 'yesterday_data':yesterday_converted_to_list, 'total_cases':total_cases, 'total_todayCases':total_todayCases, 
@@ -292,9 +298,11 @@ def usa_cases(request):
 
     country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('USA')
 
-#-----------------------------------------------------------------
+#--------FOR MAP PLOTS---------------------------
 
-    context = {'states': states_data_json, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+    plot = plots.plot1d()
+
+    context = {'plot': plot, 'states': states_data_json, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
              'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "usa_cases.html", context)
@@ -653,3 +661,25 @@ class compareCountriesView(View):
                     'country_total_recovered2': country_total_recovered2, 'country_total_critical2': country_total_critical2}
 
             return render(self.request, "compare_countries.html", context)
+
+        
+class Plot1DView(TemplateView):
+    template_name = "worldmap.html"
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(Plot1DView, self).get_context_data(**kwargs)
+        context['plot'] = plots.plotworld()
+        return context
+
+    #--------FOR MAP PLOTS---------------------------
+
+def worldmap(request):
+
+    plot = plots.plotworld()
+
+    context = {'plot': plot, 'plain_news_list': plain_news_list, 'cases': now_confirmed_cases,
+                'deaths': now_total_deaths, 'recovered': now_total_recovered, 'critical': now_total_critical,
+                'todayCases': now_todayCases, 'todayDeaths': now_todayDeaths, 'active': now_total_active, 'tests': now_total_tests}
+
+    return render(request, "worldmap.html", context)
