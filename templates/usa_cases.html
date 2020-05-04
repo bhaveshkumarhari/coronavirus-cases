@@ -11,6 +11,170 @@
 <h4 style="color: white;"><img src="https://corona.lmao.ninja/assets/img/flags/us.png" alt="Country Flag" height="20" width="30">  US </h4>
 {% endblock flag %}
 
+<script>
+  {% block jquery %}
+  
+  var endpoint = '/api/chart/data/country/USA/'
+  
+  var confirmed_cases = []
+  var cases_date = []
+  var deaths = []
+  var recovered = []
+  
+  var labels = []
+  var bar_chart_data = []
+  
+  
+  $.ajax({
+      method: "GET",
+      url: endpoint,
+      success: function(data){
+          country = data.country
+          cases_date = data.cases_dates
+          confirmed_cases = data.cases
+          deaths = data.deaths
+          recovered = data.recovered
+  
+          labels = data.labels
+          bar_chart_data = data.bar_chart_data
+
+          console.log(bar_chart_data);
+  
+          setChart()
+          
+      },
+      error: function(error_data){
+          console.log("error")
+          console.log(error_data)
+      }
+  })
+  
+  function setChart(){
+  
+      // var ctx = document.getElementById('myChart').getContext('2d');
+      // var ctx2 = document.getElementById('myChart2').getContext('2d');
+      // var ctx3 = document.getElementById('myChart3').getContext('2d');
+      var ctx4 = document.getElementById('myChart4').getContext('2d');
+  
+      // var myChart = new Chart(ctx, {
+      //     type: 'line',
+      //     data: {
+      //         labels: cases_date,
+      //         datasets: [{
+      //             label: 'Confirmed cases',
+      //             data: confirmed_cases,
+      //             backgroundColor: [
+      //                 'rgba(54, 162, 235, 0.2)',
+      //             ],
+      //             borderColor: [
+      //                 'rgba(54, 162, 235, 1)',
+      //             ],
+      //             borderWidth: 2
+      //         }]
+      //     },
+      //     options: {
+      //         scales: {
+      //             yAxes: [{
+      //                 ticks: {
+      //                     beginAtZero: true
+      //                 }
+      //             }]
+      //         }
+      //     }
+      // });
+  
+      // var myChart = new Chart(ctx2, {
+      //     type: 'line',
+      //     data: {
+      //         labels: cases_date,
+      //         datasets: [{
+      //             label: 'Total Deaths',
+      //             data: deaths,
+      //             backgroundColor: [
+      //                 'rgba(255, 99, 132, 0.2)',
+      //             ],
+      //             borderColor: [
+      //                 'rgba(255, 99, 132, 1)',
+      //             ],
+      //             borderWidth: 2
+      //         }]
+      //     },
+      //     options: {
+      //         scales: {
+      //             yAxes: [{
+      //                 ticks: {
+      //                     beginAtZero: true
+      //                 }
+      //             }]
+      //         }
+      //     }
+      // });
+  
+      // var myChart = new Chart(ctx3, {
+      //     type: 'line',
+      //     data: {
+      //         labels: cases_date,
+      //         datasets: [{
+      //             label: 'Total Recovered',
+      //             data: recovered,
+      //             backgroundColor: [
+      //                 'rgba(75, 192, 192, 0.2)',
+      //             ],
+      //             borderColor: [
+      //                 'rgba(75, 192, 192, 1)',
+      //             ],
+      //             borderWidth: 2
+      //         }]
+      //     },
+      //     options: {
+      //         scales: {
+      //             yAxes: [{
+      //                 ticks: {
+      //                     beginAtZero: true
+      //                 }
+      //             }]
+      //         }
+      //     }
+      // });
+  
+      var myChart = new Chart(ctx4, {
+          type: 'bar',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: '',
+                  data: bar_chart_data,
+                  backgroundColor: [
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                  ],
+                  borderColor: [
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(75, 192, 192, 1)',
+                  ],
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              },
+          }
+      });
+
+
+  }
+  
+
+  {% endblock %}
+  </script>
+
 {% block content %}
       <div class="content">
         <div class="container-fluid">
@@ -84,7 +248,6 @@
             </div>
           </div>
 
-
           <div class="row">
             <div class="col-lg-12 col-md-12">
               <div class="card">
@@ -103,8 +266,14 @@
                         <div class="col-md-12">{{plot|safe}}</div>
                       </div>
                       <div class='col-sm-6'>
-                        <h2>Bar chart goes here...</h2>
-                        
+                        <!-- <h4 style="text-align: center;">Displays total confirmed cases</h4>
+                        <canvas id="myChart" width="400" height="300"></canvas>
+                        <h4 style="text-align: center;">Displays total confirmed cases</h4>
+                        <canvas id="myChart2" width="400" height="300"></canvas>
+                        <h4 style="text-align: center;">Displays total confirmed cases</h4>
+                        <canvas id="myChart3" width="400" height="300"></canvas> -->
+                        <h4 style="text-align: center;">Displays total confirmed cases</h4>
+                        <canvas id="myChart4" width="400" height="200"></canvas>
                       </div>
                     </div>
                     

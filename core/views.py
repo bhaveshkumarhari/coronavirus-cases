@@ -302,6 +302,22 @@ def usa_cases(request):
 
     plot = plots.plot1d()
 
+#---------------GET COUNTRY CONTENTS FROM COUNTRY API--------------------
+
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('USA')
+
+#-------------GET COUNTRY DATA FOR LINE CHARTS--------------------------------
+
+    country, cases_dates, cases, deaths, recovered = get_country_data('US')
+
+    chart_available = True
+    if cases_dates == []:
+        chart_available = False
+
+    api_obj = ChartDataCountry()
+    api_obj.get_values(country, cases_dates, cases, deaths, recovered, country_total_cases, country_total_deaths, country_total_recovered)
+
+
     context = {'plot': plot, 'states': states_data_json, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
              'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
