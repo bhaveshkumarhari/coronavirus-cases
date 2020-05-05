@@ -278,6 +278,33 @@ function setChart(){
                       </ul>
                     </div>
                   </div>
+                  {% elif country == "India" %}
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <ul class="nav nav-tabs" data-tabs="tabs">
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'india-cases' %}">
+                            Table
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+
+                        <li class="nav-item">
+                          <a class="nav-link active" href="{% url 'country' country='India' %}">
+                            Charts
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+
+                        <!-- <li class="nav-item">
+                          <a class="nav-link" href="">
+                            Map
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li> -->
+                      </ul>
+                    </div>
+                  </div>
                   {% else %}
                   <!-- <h4 class="card-title">Employees Stats</h4> -->
                   <p class="card-category">Get charts of <img src="{{ country_flag }}" alt="Country Flag" height="15" width="25"> {{ country }} country with COVID-19, including confirmed cases, deaths and recovered cases.</p>

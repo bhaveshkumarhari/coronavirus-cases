@@ -109,7 +109,8 @@ def plotworld():
        width=1700,
        height=1000,
        font = {"size": 15, "color":"White"},
-       geo=dict(
+       # line = dict(color = '#202940', width=0.5)
+       geo=dict(  
               showframe=False,
               showcoastlines=False,
               projection_type='equirectangular',

@@ -699,3 +699,32 @@ def worldmap(request):
                 'todayCases': now_todayCases, 'todayDeaths': now_todayDeaths, 'active': now_total_active, 'tests': now_total_tests}
 
     return render(request, "worldmap.html", context)
+
+def india_cases(request):
+
+    url = "http://covid19-india-adhikansh.herokuapp.com/states"
+        
+    response = requests.request("GET", url)
+
+    data_json = json.loads(response.text)
+
+    df=pandas.DataFrame(data_json['state'])
+
+    converted_to_list = df.T.to_dict().values()
+
+    # total_cases = 0
+    # for item in converted_to_list:
+    #     for key, value in item.items():
+    #         if key == "total":
+    #             total_cases += value
+
+    # print(total_cases)
+
+    #---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
+
+    country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('India')
+
+    context = {'df': converted_to_list, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+             'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
+
+    return render(request, "india_cases.html", context)
