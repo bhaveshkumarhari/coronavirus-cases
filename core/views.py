@@ -712,19 +712,30 @@ def india_cases(request):
 
     converted_to_list = df.T.to_dict().values()
 
-    # total_cases = 0
-    # for item in converted_to_list:
-    #     for key, value in item.items():
-    #         if key == "total":
-    #             total_cases += value
+    #---------------------------------------------------
 
-    # print(total_cases)
+    url = "https://api.covid19india.org/state_district_wise.json"
+    
+    response = requests.request("GET", url)
 
+    data_json = json.loads(response.text)
+
+    india_list = []
+    for key, value in data_json.items():
+        india_states = {}
+        india_states['state'] = key
+        
+
+        inner_dict = dict(value['districtData'].items())
+        india_district = {}
+        india_states['district'] = inner_dict
+        india_list.append(india_states)
+    
     #---------------GET INDIA CONTENTS FROM COUNTRY API--------------------
 
     country_total_cases, country_total_deaths, country_total_recovered, country_total_critical = get_specific_country_data('India')
 
-    context = {'df': converted_to_list, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
+    context = {'india_list': india_list, 'df': converted_to_list, 'plain_news_list': plain_news_list, 'country_total_cases': country_total_cases, 'country_total_deaths': country_total_deaths,
              'country_total_recovered': country_total_recovered, 'country_total_critical': country_total_critical}
 
     return render(request, "india_cases.html", context)
