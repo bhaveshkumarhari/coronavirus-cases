@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block flag %}
-<h4 style="color: white;"><img src="https://corona.lmao.ninja/assets/img/flags/us.png" alt="Country Flag" height="20" width="30">  US </h4>
+<h4 style="color: white;"><img src="https://corona.lmao.ninja/assets/img/flags/in.png" alt="Country Flag" height="20" width="30">  India </h4>
 {% endblock flag %}
 
 <script>
@@ -316,7 +316,13 @@
                       <ul class="nav nav-tabs" data-tabs="tabs">
                         <li class="nav-item">
                           <a class="nav-link active" href="#states" data-toggle="tab">
-                            Table
+                            States
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="#districts" data-toggle="tab">
+                            Districts
                             <div class="ripple-container"></div>
                           </a>
                         </li>
@@ -340,6 +346,7 @@
                 
                 <div class="card-body">
                   <div class="tab-content">
+
                     <div class="tab-pane table-responsive active" id="states">
                       <div class="input-group no-border">
                         <input type="text" id="myInput" onkeyup="myFunction()" value="" class="form-control" placeholder="Search...">
@@ -349,89 +356,14 @@
                         </button> -->
                       </div>
                     </br>
-
-                    
-
-                    <div class="table-responsive">
-                      <table id="myTable" class="table table-hover" cellspacing="0" width="100%" style="border-collapse:collapse;">
-                        <thead>
-                            <tr>
-                                <th>State & District</th>
-                                <th>Confirmed</th>
-                                <th>Deaths</th>
-                                <th>Recovery</th>
-                                <th>Active</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-                          {% for state in india_list %}
-                          {% for key, value in state.items %}
-                            {% if key == 'state' %}
-                                <tr data-toggle="collapse" data-target="#demo1" class="accordion-toggle">
-                                  <td style="font-weight: bold; font-size: 13pt;">{{ value }}</td>
-                                  <td>state</td>
-                                  <td>Credit Account</td>
-                                  <td class="text-success">$150.00</td>
-                                  <td class="text-error">$120.00</td>
-                                  <td class="text-success">$150.00</td>
-                                </tr>
-                              
-                                  {% for key, value in state.items %}
-                                    {% if key == 'district' %}
-                                    {% for key, value in value.items %}
-                                        <tr>
-                        
-                                          <td>{{ key }}</td>
-                                          <td>{{ value.confirmed }}</td>
-                                          <td style="color: #da3a36;">{{ value.deceased }}</td>
-                                          <td class="text-success">{{ value.recovered }}</td>
-                                          <td>{{ value.active }}</td>
-                                          <td>$161.00</td>
-                              
-                                        
-                                          {% for key, value in value.items %}
-                                         
-                                          {% endfor %}
-                                        </tr>
-                                    {% endfor %}
-                                    {% endif %}
-                                  {% endfor %}
-                            {% endif %}
-                          {% endfor %}
-                          {% endfor %}
-                           
-                          
-                            
-
-                            <!-- <tr colspan="6" class="hiddenRow accordian-body collapse" id="#demo1"> -->
-                           
-
-                            
-
-                            <!-- <tr data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
-                                <td>2</td>
-                                <td>05 May 2013</td>
-                                <td>Credit Account</td>
-                                <td class="text-success">$11.00</td>
-                                <td class="text-error">$120.00</td>
-                                <td class="text-success">$161.00</td>
-                            </tr> -->
-
-                        </tbody>
-                    </table>
-                    </div>
-                    
-                    <!-- <table id="myTable" class="table table-hover" cellspacing="0" width="100%">
+                    <table id="myInput" class="table table-hover" cellspacing="0" width="100%">
                       <thead>
                           <tr>
                             <th>State
                             </th>
                             <th>Confirmed
                             </th>
-                            <th>Cured
+                            <th>Recovered
                             </th>
                             <th>Deaths
                             </th>
@@ -480,42 +412,91 @@
                         </tbody>
                         {% endfor %}
                   
-                    </table>  -->
+                    </table> 
                     </div>
-                   
-                    <!-- <div class="tab-pane active" id="chart">
-                      <br>
-                      <div class="row">
-                        <div class='col-sm-6'>
-                          <h4 style="text-align: center;">Current state in the world</h4>
-                          <canvas id="myChart4" width="400" height="300"></canvas>
-                        </div>
-                        <div class='col-sm-6'>
-                              <h4 style="text-align: center;">Displays total confirmed cases</h4>
-                              <canvas id="myChart" width="400" height="300"></canvas>
-                        </div>
+                    <div class="tab-pane table-responsive" id="districts">
+                      <div class="input-group no-border">
+                        <input type="text" id="myInputYesterday" onkeyup="myFunctionYesterday()" value="" class="form-control" placeholder="Search...">
+                        <!-- <button type="submit" class="btn btn-default btn-round btn-just-icon">
+                          <i class="material-icons">search</i>
+                          <div class="ripple-container"></div>
+                        </button> -->
                       </div>
-                      <br>
-                      <br>
-                      <div class="row">
-                        <div class='col-sm-6'>
-                          <h4 style="text-align: center;">Displays total deaths</h4>
-                          <canvas id="myChart2" width="400" height="300"></canvas>
-                        </div>
-                        <div class='col-sm-6'>
-                          <h4 style="text-align: center;">Displays total recovered</h4>
-                          <canvas id="myChart3" width="400" height="300"></canvas>
-                        </div>
-                      </div>
+                    </br>
+                    <table id="myTableYesterday" class="table table-hover" cellspacing="0" width="100%" style="border-collapse:collapse;">
+                      <thead>
+                          <tr>
+                              <th>State & District</th>
+                              <th>Confirmed</th>
+                              <th>Deaths</th>
+                              <th>Recovered</th>
+                              <th>Active</th>
+                              <th>Total</th>
+                          </tr>
+                      </thead>
+                      <tbody>
 
-                    </div> -->
 
-                    <!-- <div class="tab-pane" id="map">
+                        {% for state in india_list %}
+                        {% for key, value in state.items %}
+                          {% if key == 'state' %}
+                              <tr data-toggle="collapse" data-target="#demo1" class="accordion-toggle">
+                                <td style="font-weight: bold; font-size: 13pt;">{{ value }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            
+                                {% for key, value in state.items %}
+                                  {% if key == 'district' %}
+                                  {% for key, value in value.items %}
+                                      <tr>
+                      
+                                        <td>{{ key }}</td>
+                                        <td>{{ value.confirmed }}</td>
+                                        <td style="color: #da3a36;">{{ value.deceased }}</td>
+                                        <td class="text-success">{{ value.recovered }}</td>
+                                        <td>{{ value.active }}</td>
+                                        <td>$161.00</td>
+                            
+                                      
+                                        {% for key, value in value.items %}
+                                       
+                                        {% endfor %}
+                                      </tr>
+                                  {% endfor %}
+                                  {% endif %}
+                                {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                         
+                        
+                          
 
-                          {# <div id="plot_container" class="col-md-8 col-md-offset-2">{{plot|safe}}</div>#}
-                          <div class="col-md-12">{{plot|safe}}</div>
+                          <!-- <tr colspan="6" class="hiddenRow accordian-body collapse" id="#demo1"> -->
+                         
 
-                    </div> -->
+                          
+
+                          <!-- <tr data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
+                              <td>2</td>
+                              <td>05 May 2013</td>
+                              <td>Credit Account</td>
+                              <td class="text-success">$11.00</td>
+                              <td class="text-error">$120.00</td>
+                              <td class="text-success">$161.00</td>
+                          </tr> -->
+
+                      </tbody>
+                  </table>
+                    </div>
+
+
+      
+                  
 
                     
                   </div>
