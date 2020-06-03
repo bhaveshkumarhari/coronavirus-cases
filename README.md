@@ -8,6 +8,9 @@ This application developed with Django framework which includes:
 - Comparison of any two countries with line chart and bar chart.
 - Interactive webmap for current stats of COVID-19 cases of the world and the USA.
 
+# Technology used : 
+HTML, CSS, Bootstrap, Javascript, Python, Django, Datatables, Chartjs, Pandas, Beautifulsoup, Third party API Integration, Plotly (Choropleth maps), Django REST API and Jupyter Notebook.
+
 # Screenshots
 - Current COVID-19 cases of the world and all the countries includes yesterday's figures within a table.
 ![Image of COVID-19 Tracker Dashboard](https://github.com/bhaveshkumarhari/coronavirus-cases/blob/master/screenshots/dashboard.png)
