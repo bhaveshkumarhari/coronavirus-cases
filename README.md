@@ -1,4 +1,4 @@
-# coronavirus-cases
+# COVID-19 Tracker
 Information about COVID-19 cases of the world.
 
 This application developed with Django framework which includes:
