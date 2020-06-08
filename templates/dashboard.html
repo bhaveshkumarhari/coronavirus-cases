@@ -3,6 +3,8 @@
 {% load humanize %}
 
 {% block head %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
 {{block.super}}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
@@ -324,9 +326,9 @@ function setChart(){
                         </button> -->
                       </div>
                     </br>
-                        <table id="myTableToday" class="table table-hover tablesorter" cellspacing="0" width="100%">
+                        <table id="myTableToday" class="table table-hover tablesorter" style="background-color:#202940;" cellspacing="0" width="100%">
                             <thead class="header" id="myHeader">
-                              <tr>
+                              <tr style="background-color:#202940;">
                                 <th>
                                 </th>
                                 <th>Country
@@ -355,7 +357,7 @@ function setChart(){
                             </thead>
                             
                             <tbody>
-                              <tr>
+                              <tr style="background-color:#202940;">
                                 <td width="1"><img src="{% static 'dark/assets/img/earth.png' %}" alt="Country Flag" height="25" width="25"></td>
                                 <td>World</td>
                                 <td>{{ cases|intcomma }}</td>
@@ -368,7 +370,7 @@ function setChart(){
                                 <td>{{ tests|intcomma }}</td>
                               </tr>
                               {% for item in country %}
-                                <tr>
+                                <tr style="background-color:#202940;">
                                     {% for key, value in item.items %}
 
                                         <!-- {% if key == 'countryInfo' %}
@@ -666,3 +668,12 @@ function setChart(){
         </div>
       </div>
 {% endblock content %}
+
+{% block extra_scripts %}
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
+{% endblock extra_scripts %}
