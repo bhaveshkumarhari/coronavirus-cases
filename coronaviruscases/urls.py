@@ -3,6 +3,9 @@ from django.urls import path, include
 from core import views
 from core.views import ChartData, ChartDataCountry, ChartDataCompareCountry, compareCountriesView
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.cases, name="home"),
@@ -23,4 +26,4 @@ urlpatterns = [
 
     path('worldmap/', views.worldmap, name='worldmap'),
 
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
