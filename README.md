@@ -11,6 +11,12 @@ This application developed with Django framework which includes:
 # Technology used : 
 HTML, CSS, Bootstrap, Javascript, Python, Django, Datatables, Chartjs, Pandas, Beautifulsoup, Third party API Integration, Plotly (Choropleth maps), Django REST API and Jupyter Notebook.
 
+# Development Workflow
+- virtualenv env
+- source env/bin/activate
+- pip install -r requirements.txt
+- python manage.py runserver
+
 # Screenshots
 - Current COVID-19 cases of the world and all the countries includes yesterday's figures within a table.
 
