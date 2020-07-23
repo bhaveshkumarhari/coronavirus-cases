@@ -17,7 +17,8 @@ HTML, CSS, Bootstrap, Javascript, Python, Django, Datatables, Chartjs, Pandas, B
 - pip install -r requirements.txt
 - python manage.py runserver
 
-# Live Demo - https://coronavirus-cases-hari.herokuapp.com/
+# Live Demo 
+- https://coronavirus-cases-hari.herokuapp.com/
 
 # Screenshots
 - Current COVID-19 cases of the world and all the countries includes yesterday's figures within a table.
