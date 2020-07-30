@@ -14,6 +14,8 @@ from rest_framework.response import Response
 
 from django.contrib.auth import get_user_model
 
+from .models import CountriesData
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -59,12 +61,14 @@ for item in some_news_list:
 plain_news_list = [i for i in plain_news_list if i]
 
 #-------------Live Data of all countries----------------------
+try:
+    url = "https://corona.lmao.ninja/v2/countries"
+            
+    response = requests.request("GET", url)
 
-url = "https://corona.lmao.ninja/v2/countries"
-        
-response = requests.request("GET", url)
-
-world_data_json = json.loads(response.text)
+    world_data_json = json.loads(response.text)
+except:
+    world_data_json = False
 
 
 #-----------------Total Live Data of the world----------------
@@ -122,21 +126,63 @@ def cases(request):
 
 #-----------------New List of dictionaries--------------------
 
-    new_list = []
-    for dict_item in world_data_json:
-        new_dict = {}
-        new_dict['flag'] = dict_item['countryInfo']['flag']
-        new_dict['country'] = dict_item['country']
-        new_dict['cases'] = dict_item['cases']
-        new_dict['todayCases'] = dict_item['todayCases']
-        new_dict['deaths'] = dict_item['deaths']
-        new_dict['todayDeaths'] = dict_item['todayDeaths']
-        new_dict['recovered'] = dict_item['recovered']
-        new_dict['active'] = dict_item['active']
-        new_dict['critical'] = dict_item['critical']
-        new_dict['tests'] = dict_item['tests']
-    
-        new_list.append(new_dict)
+    if world_data_json:
+        CountriesData.objects.all().delete()
+        new_list = []
+        for dict_item in world_data_json:
+            new_dict = {}
+            new_dict['flag'] = dict_item['countryInfo']['flag']
+            new_dict['country'] = dict_item['country']
+            new_dict['cases'] = dict_item['cases']
+            new_dict['todayCases'] = dict_item['todayCases']
+            new_dict['deaths'] = dict_item['deaths']
+            new_dict['todayDeaths'] = dict_item['todayDeaths']
+            new_dict['recovered'] = dict_item['recovered']
+            new_dict['active'] = dict_item['active']
+            new_dict['critical'] = dict_item['critical']
+            new_dict['tests'] = dict_item['tests']
+        
+            new_list.append(new_dict)
+
+            #-----------------------------
+
+            countries_data = CountriesData(
+                flag = new_dict['flag'],
+                country = new_dict['country'],
+                cases = new_dict['cases'],
+                today_cases = new_dict['todayCases'],
+                deaths = new_dict['deaths'],
+                today_deaths = new_dict['todayDeaths'],
+                recovered = new_dict['recovered'],
+                active = new_dict['active'],
+                critical = new_dict['critical'],
+                tests = new_dict['tests']
+            )
+            countries_data.save()
+
+            #----------------------------
+        # print(new_dict)
+
+    else:
+        print("Data from Database")
+        countries_data = CountriesData.objects.all()
+        new_list = []
+        for db_item in countries_data:
+            new_dict = {}
+            new_dict['flag'] = db_item.flag
+            new_dict['country'] = db_item.country
+            new_dict['cases'] = int(db_item.cases)
+            new_dict['todayCases'] = db_item.today_cases
+            new_dict['deaths'] = db_item.deaths
+            new_dict['todayDeaths'] = db_item.today_deaths
+            new_dict['recovered'] = db_item.recovered
+            new_dict['active'] = db_item.active
+            new_dict['critical'] = db_item.critical
+            new_dict['tests'] = db_item.tests
+        
+            new_list.append(new_dict)
+        
+        # print(new_dict)
 
     now_df=pandas.DataFrame(new_list)
 
