@@ -397,8 +397,6 @@
                                         {% if key == 'country' %}
                                             {% if value == 'USA' %}
                                                 <td><b><u><a href="{% url 'usa-cases' %}">{{ value }}</a></u></b></td>
-                                            {% elif value == 'India' %}
-                                                <td><b><u><a href="{% url 'india-cases' %}">{{ value }}</a></u></b></td>
                                             {% else %}
                                                 <td><b><u><a href="{% url 'country' country=value %}">{{ value }}</a></u></b></td>
                                             {% endif %}
